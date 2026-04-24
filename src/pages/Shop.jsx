@@ -71,6 +71,7 @@ useEffect(() => {
     fetchCourses();
   }, [slug]);
 
+  
 
   return (
     <div className="min-h-screen bg-white pb-24">
