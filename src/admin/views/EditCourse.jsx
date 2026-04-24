@@ -6,7 +6,7 @@ import Underline from '@tiptap/extension-underline';
 import EmojiPicker from "emoji-picker-react";
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
-import FontSize from '../components/courses/fontSize';
+import FontSize from '../components/courses/FontSize';
 import ConfirmModal from '../components/product/ConfirmModal';
 import api from '../services/api';
 import { uploadToCloudinary } from '../components/courses/UploadCloudiry.jsx';

@@ -6,7 +6,7 @@ import Underline from '@tiptap/extension-underline';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Blockquote from '@tiptap/extension-blockquote';
-import FontSize from './fontSize';
+import FontSize from './FontSize';
 import MenuBar from './MenuBar';
 
 const LessonEditor = ({ initialContent, onChange }) => {
