@@ -1,7 +1,7 @@
 // src/pages/CourseDetails.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+
 import ChapterList from '../components/ChapterList';
 import WhatsAppCapture from '../components/WhatsAppCapture';
 import { getAuthToken, saveFan } from '../services/feedService';
@@ -25,7 +25,7 @@ const CourseDetails = () => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/client/get-details/${coursesId}`);
+        const res = await api.get(`/client/get-details/${coursesId}`);
         setCourse(res.data.data);
       } catch (err) {
         console.error("Erreur détails:", err);
