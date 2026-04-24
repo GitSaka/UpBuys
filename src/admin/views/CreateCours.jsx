@@ -6,7 +6,7 @@ import EmojiPicker from "emoji-picker-react";
 import { TextStyle } from '@tiptap/extension-text-style';
 import Blockquote from '@tiptap/extension-blockquote';
 import Color from '@tiptap/extension-color';
-import FontSize from '../components/courses/fontSize';
+import FontSize from '../components/courses/FontSize';
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from '../components/product/ConfirmModal';
 import api from '../services/api'
