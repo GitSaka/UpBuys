@@ -4,7 +4,8 @@ import { CATEGORIES } from '../admin/constants/category';
 import Navbar from '../components/layout/Navbar';
 import {Footer }from '../components/layout/Footer';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+
+import api from '../services/api';
 
 const CategoryView = () => {
   const { category } = useParams(); 
@@ -73,8 +74,8 @@ useEffect(() => {
     const fetchCoaches = async () => {
       setLoading(true)
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/client/category/${category}`
+        const response = await api.get(
+          `/client/category/${category}`
         );
 
         setCoaches(response.data);

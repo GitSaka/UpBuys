@@ -97,7 +97,7 @@ const EditCourse = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await api.get(`http://localhost:5000/api/admin/get-courses/${id}`);
+        const res = await api.get(`/admin/get-courses/${id}`);
         const data = res.data.data;
         setCourse({ ...data, materials: data.materials || [] });
         setLessons(data.lessons || []);
@@ -160,7 +160,7 @@ const EditCourse = () => {
     setSaving(true);
     const payload = { ...course, descriptionLong: editor.getHTML(), lessons: course.productType === 'Metier' ? lessons : [] };
     try {
-      await api.put(`http://localhost:5000/api/admin/update-course/${id}`, payload);
+      await api.put(`/admin/update-course/${id}`, payload);
       setStatusModal({ isOpen: true, mode: 'success', title: 'Bravo !', message: 'Empire mis à jour 👑' });
     } catch (err) {
        setStatusModal({ isOpen: true, mode: 'warning', title: 'Erreur', message: 'Échec de la mise à jour ❌' }); 
