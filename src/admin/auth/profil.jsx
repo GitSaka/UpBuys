@@ -21,7 +21,7 @@ const Settings = () => {
   
   
    const dispatch = useDispatch();
-  
+   console.log(inLoading)
   // 🎯 ON RÉCUPÈRE L'UTILISATEUR GLOBAL DE REDUX
   const { user, isLoading } = useSelector((state) => state.auth);
   useEffect(() => {
@@ -63,7 +63,7 @@ const handleSaveProfile = async () => {
   
 
     const res = await api.put(
-      `http://localhost:5000/api/auth/update/${profile.slug}`,
+      `/auth/update/${profile.slug}`,
      profile
     );
 
