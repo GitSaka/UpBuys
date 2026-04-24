@@ -22,7 +22,7 @@ const confirmDelete = async () => {
   const id = modal.id;
   setLoadingr(true)
   try {
-    await api.delete(`http://localhost:5000/api/admin/delete-course/${id}`);
+    await api.delete(`/admin/delete-course/${id}`);
     setCourses(courses.filter(c => c._id !== id));
     setModal({ ...modal, isOpen: false }); // Ferme le modal après succès
   } catch (err) {
@@ -37,7 +37,7 @@ const confirmDelete = async () => {
     const fetchCourses = async () => {
       setLoading(true)
       try {
-        const res = await api.get('http://localhost:5000/api/admin/getAll-courses');
+        const res = await api.get('/admin/getAll-courses');
         
         setCourses(res.data.data);
       } catch (err) {
@@ -53,7 +53,7 @@ const confirmDelete = async () => {
         const newStatus = currentStatus === 'Actif' ? 'Brouillon' : 'Actif';
          setLoadingId(id); // 👈 active le loading UNIQUEMENT pour cette ligne
           try {
-            await api.patch(`http://localhost:5000/api/admin/courses/${id}/status`, { status: newStatus });
+            await api.patch(`/admin/courses/${id}/status`, { status: newStatus });
             // Mise à jour de l'état local
             setCourses(courses.map(c => c._id === id ? { ...c, status: newStatus } : c));
           } catch (err) {

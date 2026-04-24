@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const WhatsAppCapture = ({ isOpen,coachId, onConfirm, onCancel }) => {
   const [phone, setPhone] = useState('');
@@ -19,7 +19,7 @@ const WhatsAppCapture = ({ isOpen,coachId, onConfirm, onCancel }) => {
 
     try {
       // On vérifie d'abord si le numéro existe dans la base
-      const res = await axios.post('http://localhost:5000/api/fans/check-access', {
+      const res = await api.post('/fans/check-access', {
         phoneNumber: phone, countryCode,coachId
       });
       
@@ -66,7 +66,7 @@ const handleFinalAuth = async (e) => {
 
       try {
         // 1. C'est ici que le Popup interroge le serveur
-        const res = await axios.post('http://localhost:5000/api/fans/auth', {
+        const res = await api.post('/fans/auth', {
           phoneNumber: phone,
           countryCode,
           name,

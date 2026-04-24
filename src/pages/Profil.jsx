@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { getFan, saveFan } from '../services/feedService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import api from '../services/api';
 
 const INFLUENCER = {
   name: "Aïcha Digital",
@@ -51,7 +51,7 @@ function Home() {
 useEffect(() => {
     const fetchCoachData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/client/profile/${slug}`);
+        const res = await api.get(`/client/profile/${slug}`);
         setCoach(res.data.data);
       } catch (err) {
         console.log(err)
@@ -104,7 +104,7 @@ useEffect(() => {
 
     try {
       // On vérifie d'abord si le numéro existe dans la base
-      const res = await axios.post('http://localhost:5000/api/fans/check-access', {
+      const res = await api.post('/fans/check-access', {
         phoneNumber: phone, countryCode,coachSlug:slug
       });
       
@@ -126,7 +126,7 @@ useEffect(() => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post(`http://localhost:5000/api/fans/auth`, {
+      const res = await api.post(`/fans/auth`, {
         phoneNumber: phone, countryCode, name, password,isExistingUser,coachSlug:slug
       });
 

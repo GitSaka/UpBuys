@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../../services/api";
 
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
@@ -7,8 +7,8 @@ export const fetchUserProfile = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.token;
 
-      const response = await axios.get(
-        "http://localhost:5000/api/auth/me",
+      const response = await api.get(
+        "/auth/me",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export const registerAdmin = createAsyncThunk(
   'auth/registerAdmin',
   async (formData, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
+      const response = await api.post('/auth/register', {
         email: formData.email,
         password: formData.password,
         userName: formData.slug,
@@ -55,8 +55,8 @@ export const loginAdmin = createAsyncThunk(
   "auth/loginAdmin",
   async (credentials, thunkAPI) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+      const response = await api.post(
+        "/auth/login",
         credentials
       );
 

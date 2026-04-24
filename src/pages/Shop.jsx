@@ -1,12 +1,12 @@
 // src/pages/Store.jsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import CourseCard from '../components/CourseCard';
 // import { MOCK_COURSES } from '../services/data';
 import { useNavigate, useParams } from "react-router-dom";
 import WhatsAppCapture from '../components/WhatsAppCapture';
 import Navbar from '../components/layout/Navbar';
 import { saveFan } from '../services/feedService';
+import api from '../services/api';
 
 
 const Store = () => {
@@ -59,7 +59,7 @@ useEffect(() => {
     // Appel API pour récupérer les formations
     const fetchCourses = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/client/get-all-cours/${slug}`);
+        const res = await api.get(`/client/get-all-cours/${slug}`);
         setCourses(res.data.data);
         
       } catch (err) {

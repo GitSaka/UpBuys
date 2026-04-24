@@ -13,58 +13,7 @@ const CategoryView = () => {
   const currentCat = CATEGORIES.find(c => c.id === category);
   const [coaches, setCoaches] = useState([]);
    const [loading, setLoading] = useState(false);
-  // 🧪 FAUSSES DONNÉES (À remplacer par ton fetch MongoDB)
-  // const FAKE_COACHES = [
-  //   { 
-  //       id: 'saka-5684', 
-  //       name: 'Saka Couture', 
-  //       job: 'Maître Tailleur', 
-  //       bio: 'L\'art de la coupe impériale et des finitions de luxe.', 
-  //       img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop',
-  //       banner: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9'
-  //   },
-  //   { 
-  //       id: 'aicha-1234', 
-  //       name: 'Maman Aïcha', 
-  //       job: 'Haute Couture', 
-  //       bio: 'La tradition africaine au service du futur numérique.', 
-  //       img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop',
-  //       banner: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9'
-  //   },
-  //   { 
-  //       id: 'aicha-1234', 
-  //       name: 'Maman Aïcha', 
-  //       job: 'Haute Couture', 
-  //       bio: 'La tradition africaine au service du futur numérique.', 
-  //       img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop',
-  //       banner: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9'
-  //   },
-  //   { 
-  //       id: 'aicha-1234', 
-  //       name: 'Maman Aïcha', 
-  //       job: 'Haute Couture', 
-  //       bio: 'La tradition africaine au service du futur numérique.', 
-  //       img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop',
-  //       banner: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9'
-  //   },
-  //   { 
-  //       id: 'aicha-1234', 
-  //       name: 'Maman Aïcha', 
-  //       job: 'Haute Couture', 
-  //       bio: 'La tradition africaine au service du futur numérique.', 
-  //       img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop',
-  //       banner: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9'
-  //   },
-  //   { 
-  //       id: 'aicha-1234', 
-  //       name: 'Maman Aïcha', 
-  //       job: 'Haute Couture', 
-  //       bio: 'La tradition africaine au service du futur numérique.', 
-  //       img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop',
-  //       banner: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9'
-  //   },
-  // ];
-
+ 
   useEffect(() => {
   // 🚀 REMONTER AU SOMMET DÈS L'ARRIVÉE
   window.scrollTo(0, 0);

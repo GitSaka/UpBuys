@@ -9,7 +9,6 @@ import SidebarRight from '../components/feed/SidebarRight'; // ⬅️ À CRÉER
 import { getAuthToken, getFan, saveFan} from '../services/feedService';
 import WhatsAppCapture from '../components/WhatsAppCapture';
 import AuthGuard from '../components/feed/AuthGuard';
-import axios from 'axios';
  import { jwtDecode } from "jwt-decode";
 import api from '../services/api';
 import ConfirmModal from '../admin/components/product/ConfirmModal';
@@ -43,7 +42,7 @@ const FeedContainer = () => {
 
     useEffect(() => {
       const fetchCoach = async () => {
-        const res = await axios.get(`http://localhost:5000/api/client/profile/${slug}`); // backend renvoie {_id, name, ...}
+        const res = await api.get(`/client/profile/${slug}`); // backend renvoie {_id, name, ...}
         setCoach(res.data.data);
       };
       fetchCoach();
@@ -73,8 +72,8 @@ useEffect(() => {
   const fetchFeed = async () => {
     setLoading(true)
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/feed/${slug}`
+      const res = await api.get(
+        `/feed/${slug}`
       );
 
       setCoach(res.data.coach);

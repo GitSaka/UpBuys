@@ -398,7 +398,7 @@ const handlePublish = async (e) => {
     console.log("📦 Données envoyées :", finalData);
 
     const res = await api.post(
-      "http://localhost:5000/api/admin/create-empire",
+      "/admin/create-empire",
       finalData
     );
 
