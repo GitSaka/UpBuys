@@ -5,7 +5,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES } from '../admin/constants/category';
 import Navbar from '../components/layout/Navbar';
-import {Footer }from '../components/layout/footer';
+import {Footer }from '../components/layout/Footer';
 
 const HomeGeneral = () => {
   const navigate = useNavigate();
