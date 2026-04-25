@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams} from 'react-router-dom';
-import axios from 'axios';
 import Navbar from '../components/layout/Navbar';
 import api from '../services/api';
 
@@ -15,7 +14,7 @@ const Checkout = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/client/get-details/${productId}`);
+        const res = await api.get(`/client/get-details/${productId}`);
         setCourse(res.data.data);
       } catch (err) {
         console.error("Erreur de récupération du cours"+ err);
@@ -31,7 +30,7 @@ const Checkout = () => {
   try {
     setIsPaying(true);
 
-    const res = await api.post('http://localhost:5000/api/payments/initiate', {
+    const res = await api.post('/payments/initiate', {
       courseId: course?._id
     });
 
