@@ -357,82 +357,83 @@ const handleFileUpload = async (e, index = null, field = 'thumbnail') => {
 };
 
 
-
-  // Dans CreateCourse.jsx
 const handlePublish = async (e) => {
   e.preventDefault();
 
-  // 🧠 Validation minimale côté front
-  if(!course.isFree){
-     if (!course.title || !course.price) {
-    
-    setStatusModal({
-            isOpen: true,
-            mode: 'warning', // 'delete' utilise le rouge dans notre composant
-            title: 'Oups ! Erreur',
-            message:'Titre et prix obligatoires ❌'
-            });
-    return;
+  if (!course.isFree) {
+    if (!course.title || !course.price) {
+      setStatusModal({
+        isOpen: true,
+        mode: 'warning',
+        title: 'Oups ! Erreur',
+        message: 'Titre et prix obligatoires ❌'
+      });
+      return;
+    }
   }
-  }
- 
 
   if (Number(course.price) < 0) {
-    alert("Le prix ne peut pas être négatif ❌");
+    setStatusModal({
+      isOpen: true,
+      mode: 'warning',
+      title: 'Erreur',
+      message: "Le prix ne peut pas être négatif ❌"
+    });
     return;
   }
 
   const finalData = {
     ...course,
     descriptionLong: editor.getHTML(),
-    lessons,
+    lessons: course.productType === 'Metier' ? lessons : [],
     price: course.isFree ? 0 : course.price
   };
-  if(course.productType === 'Metier'){
-      finalData.lessons = lessons
-  }else{
-    finalData.lessons = [];
-  }
- setLoading(true)
+
   try {
-    console.log("📦 Données envoyées :", finalData);
+    setLoading(true);
 
-    const res = await api.post(
-      "/admin/create-empire",
-      finalData
-    );
+    const res = await api.post("/admin/create-empire", finalData);
 
-    //  if (response.data.success) {
-    //   // 3. EFFACER LES FORMULAIRES (Reset)
-    //   setCourseData({ title: '', subtitle: '', price: '', thumbnail: '', descriptionLong: '' });
-    //   setLessons([{ title: '', type: 'video', mediaUrl: '', duration: '', description: '', isFree: false }]);
-    //   editor.commands.setContent('<p></p>'); // Vide l'éditeur TipTap
+    console.log("✅ Créé :", res.data);
 
-      // 4. REDIRECTION VERS LA PAGE SUCCÈS
-      // On attend 500ms pour laisser le temps à l'utilisateur de réaliser le succès
-     setTimeout(() => {
-      navigate(`/admin/success/${res.data.courseId}`);
-    }, 5000);
+    // 1. reset propre AVANT navigation
+    setCourse({
+      title: '',
+      subtitle: '',
+      price: '',
+      thumbnail: '',
+      descriptionLong: '',
+      isFree: false,
+      productType: 'Metier'
+    });
 
-    console.log("✅ Réponse serveur :", res.data);
+    setLessons([]);
+
+    editor.commands.setContent('<p></p>');
+
     setStatusModal({
-            isOpen: true,
-            mode: 'success', // 'delete' utilise le rouge dans notre composant
-            title: 'Bravooo',
-            message: 'Empire créé avec succès 👑🚀'
-            });
-    
+      isOpen: true,
+      mode: 'success',
+      title: 'Bravooo',
+      message: 'Empire créé avec succès 👑🚀'
+    });
+
+    // 2. navigation rapide (pas 5 secondes inutiles)
+    setTimeout(() => {
+      navigate(`/admin/success/${res.data.courseId}`);
+    }, 1200);
 
   } catch (err) {
-    console.error("❌ Erreur API :", err.response?.data || err.message);
+    console.error(err);
+
     setStatusModal({
-            isOpen: true,
-            mode: 'warning', // 'delete' utilise le rouge dans notre composant
-            title: 'Oups ! Erreur',
-            message: err.response?.data?.message || 'Impossible de joindre le serveur. ❌'
-            });
-  }finally {
-    // 5. Arrêter le chargement (qu'il y ait succès ou erreur)
+      isOpen: true,
+      mode: 'warning',
+      title: 'Erreur',
+      message: err.response?.data?.message || 'Serveur indisponible ❌'
+    });
+
+  } finally {
     setLoading(false);
   }
 };
