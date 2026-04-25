@@ -50,6 +50,7 @@ const LearningArea = () => {
 
 useEffect(() => {
   const fetchEverything = async () => {
+    let data;
     try {
       setLoading(true);
       setIsVideoLoading(true);
@@ -100,7 +101,7 @@ useEffect(() => {
 
     } catch (err) {
       console.error("Erreur d'accès à l'Empire :", err);
-      navigate("/");
+      navigate(`/empire/${data.slug}/shop`);
     } finally {
       setLoading(false);
       setIsVideoLoading(false);
