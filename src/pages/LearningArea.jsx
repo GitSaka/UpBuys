@@ -146,7 +146,7 @@ useEffect(() => {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white font-black text-gray-900 animate-pulse uppercase tracking-[0.3em]">
-      Veullez patienter un instant...
+      Ouverture en cours...
     </div>
   );
 

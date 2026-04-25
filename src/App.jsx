@@ -58,6 +58,14 @@ function App() {
       <Route element={<PublicAdminRoute />}>
         <Route path="/admin/auth/register" element={<AdminRegister />} />
         <Route path="/admin/auth/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            token
+              ? <Navigate to="/admin/dashboard" replace />
+              : <Navigate to="/admin/auth/login" replace />
+          }
+        />
         <Route path="/auth/facebook/callback" element={<FacebookCallback />} />
       </Route>
 
