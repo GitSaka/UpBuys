@@ -1,7 +1,7 @@
 // src/pages/LearningArea.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 import ChapterList from '../components/ChapterList';
 import ReactPlayer from 'react-player';
 import DOMPurify from 'dompurify';
@@ -55,8 +55,8 @@ useEffect(() => {
       setIsVideoLoading(true);
 
       // 1️⃣ Charger le cours d'abord
-      const res = await axios.get(
-        `http://localhost:5000/api/client/get-details/${courseId}`
+      const res = await api.get(
+        `/client/get-details/${courseId}`
       );
       const data = res.data.data;
       setCourse(data);
@@ -68,7 +68,7 @@ useEffect(() => {
       // 2️⃣ SI LE COURS EST GRATUIT → PAS DE CHECK PAYMENT
       if (!data.isFree && !isCoachOfThisEmpire) {
         const check = await api.get(
-          `http://localhost:5000/api/payments/check/${courseId}`
+          `/payments/check/${courseId}`
         );
 
         if (!check.data.hasAccess) {
@@ -138,7 +138,7 @@ useEffect(() => {
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="text-center space-y-4">
         <div className="w-10 h-10 border-4 border-purple-600/20 border-t-purple-600 rounded-full animate-spin mx-auto"></div>
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] animate-pulse">Vérification du Pass Souverain...</p>
+        <p className="text-[10px] font-black text-gray-900 uppercase tracking-[0.3em] animate-pulse">Vérification du Pass Souverain...</p>
       </div>
     </div>
   );

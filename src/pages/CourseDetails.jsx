@@ -59,7 +59,7 @@ useEffect(() => {
     try {
       
       // 🛰️ On demande au serveur : "Est-ce que cet élève possède ce cours ?"
-      const res = await api.get(`http://localhost:5000/api/payments/check/${course?._id}`);
+      const res = await api.get(`/payments/check/${course?._id}`);
       setHasAccess(res.data.hasAccess); // Sera true ou false selon la BDD
     } catch (err) {
       console.log(err)
