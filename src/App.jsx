@@ -58,16 +58,18 @@ function App() {
       <Route element={<PublicAdminRoute />}>
         <Route path="/admin/auth/register" element={<AdminRegister />} />
         <Route path="/admin/auth/login" element={<AdminLogin />} />
-        <Route
+        {/* <Route path="/auth/facebook/callback" element={<FacebookCallback />} /> */}
+      </Route>
+
+      <Route
           path="/admin"
           element={
-            token
-              ? <Navigate to="/admin/dashboard" replace />
-              : <Navigate to="/admin/auth/login" replace />
+            <Navigate
+              to={token ? "/admin/dashboard" : "/admin/auth/login"}
+              replace
+            />
           }
         />
-        <Route path="/auth/facebook/callback" element={<FacebookCallback />} />
-      </Route>
 
       {/* 3. 👑 ESPACE ADMINISTRATION (ProtectedAdminRoute) */}
       <Route element={<ProtectedAdminRoute />}>
