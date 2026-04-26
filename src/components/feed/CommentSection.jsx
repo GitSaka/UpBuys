@@ -85,57 +85,64 @@ const handleSendComment = async () => {
   const previewComments = localComments.slice(-3);
   const remainingCount = totalCount - 3;
 
-  return (
+    return (
     <div className="mt-4 space-y-4 animate-fadeIn">
-      {/* 1. LISTE DES COMMENTAIRES (Aperçu) */}
+      {/* 1. LISTE DES COMMENTAIRES : On passe en text-[14px] pour la lisibilité */}
       <div className="space-y-3">
         {previewComments.map((c, i) => (
-          <div key={i} className="flex gap-3 items-start bg-gray-50/50 p-3 rounded-[22px] border border-gray-100/30">
-            <div className="w-7 h-7 rounded-full bg-purple-100 flex-shrink-0 border border-white shadow-sm flex items-center justify-center text-[10px] font-black italic text-purple-600">
+          <div key={i} className="flex gap-3 items-start bg-gray-50/50 p-3 rounded-[20px] border border-gray-100">
+            <div className="w-8 h-8 rounded-full bg-purple-100 flex-shrink-0 flex items-center justify-center text-[12px] font-bold text-purple-600">
               {c.author?.charAt(0)}
             </div>
-            <div className="text-left text-[11px]">
-              <span className="font-black uppercase italic text-purple-700 mr-2 tracking-tighter">
+            <div className="text-left text-[14px]"> {/* Augmenté ici */}
+              <span className="font-bold text-gray-900 mr-2">
                 {c.author}
               </span>
-              <p className="text-gray-600 font-medium leading-tight mt-1">{c.text}</p>
+              <p className="text-gray-700 leading-snug mt-0.5">{c.text}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* 2. BOUTON "VOIR PLUS" (Uniquement si > 3) */}
+      {/* 2. BOUTON VOIR PLUS : Un peu plus grand pour le pouce */}
       {remainingCount > 0 && (
         <button 
           onClick={() => DrawerOpen(true)}
-          className="ml-10 text-[9px] font-black text-purple-500 uppercase tracking-widest hover:underline transition-all"
+          className="ml-11 text-[13px] font-semibold text-gray-500 hover:underline transition-all"
         >
-          {/* Sur Mobile, on écrit "Voir les 97 autres avis" */}
-          + Voir les {remainingCount} autres avis de la communauté
+          Voir les {remainingCount} autres commentaires
         </button>
       )}
 
-      
-
-      {/* 3. BARRE DE SAISIE RAPIDE (L'interaction immédiate) */}
-      <div className="flex gap-2 items-center bg-white p-1 rounded-[25px] border border-purple-50 shadow-sm focus-within:ring-2 focus-within:ring-purple-100 transition-all">
+      {/* 3. BARRE DE SAISIE : CHANGÉ EN <form> POUR LA TOUCHE ENTRÉE */}
+      <form 
+        onSubmit={(e) => {
+          e.preventDefault(); // Empêche le rechargement de la page
+          handleSendComment(); // Appelle ta fonction existante
+        }}
+        className="flex gap-2 items-center bg-gray-100 p-1.5 rounded-full border border-transparent focus-within:bg-white focus-within:border-gray-300 transition-all mx-2 mb-2"
+      >
         <input 
-           value={newMessage} // 👈 Lié à la variable newMessage
-            onChange={(e) => setNewMessage(e.target.value)} // 👈 Met à jour newMessage
-            placeholder="Ajouter un avis..."
-          className="flex-1 bg-transparent p-3 text-[10px] font-bold outline-none italic"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Écris un commentaire..."
+          className="flex-1 bg-transparent px-3 py-2 text-[15px] font-normal outline-none text-gray-800 placeholder:text-gray-500"
         />
         <button 
-         onClick={handleSendComment} // 👈 Déclenche la fonction
-          disabled={isSubmitting}
-         className="bg-gray-900 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-purple-600 transition-all shadow-lg active:scale-90">
-          🚀
-
-          
+          type="submit" // 🎯 IMPORTANT : permet de valider avec "Entrée"
+          disabled={isSubmitting || !newMessage.trim()}
+          className={`px-4 py-2 text-[15px] font-bold transition-all ${
+            newMessage.trim() 
+              ? 'text-blue-600' 
+              : 'text-gray-400 opacity-50'
+          }`}
+        >
+          {isSubmitting ? "..." : "Publier"}
         </button>
-      </div>
+      </form>
     </div>
   );
+
 };
 
 export default CommentSection;

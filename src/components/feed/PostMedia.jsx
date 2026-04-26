@@ -9,7 +9,7 @@ const PostMedia = ({ url}) => {
   const isVideo = url.includes('/video/upload/') || url.endsWith('.mp4');
 
   return (
-    <div className="rounded-[30px] overflow-hidden border border-gray-100 mb-5 bg-gray-50 shadow-inner group relative aspect-auto">
+    <div className="overflow-hidden border-gray-100  bg-gray-50 shadow-inner group relative aspect-auto">
       {isVideo ? (
         <div className="relative w-full aspect-[9/16] max-h-[75vh] md:max-h-[450px] aspect-square md:aspect-[4/5] bg-black rounded-[30px] overflow-hidden flex items-center justify-center group">
           

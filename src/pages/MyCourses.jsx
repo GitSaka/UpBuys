@@ -37,7 +37,7 @@ const MyCourses = () => {
        <Navbar slug={slug} />
 
       <header className="pt-24 pb-12 px-6 max-w-4xl mx-auto text-center animate-fadeIn">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 mb-4 uppercase italic">
+        <h1 className="text-4xl sm:text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-4 uppercase italic">
           Bibliothèque <span className="text-purple-600">Privée</span> 📚
         </h1>
         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic">

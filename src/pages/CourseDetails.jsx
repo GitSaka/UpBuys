@@ -115,7 +115,21 @@ const handleLeadCapture = async (authData) => {
   }
 };
 
-  if (loading) return <div className="p-20 text-center font-black animate-pulse uppercase tracking-[0.3em] text-gray-900">Synchronisation de l'Empire...</div>;
+  if (loading) return (
+  <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 space-y-6">
+
+    <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+
+    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-gray-800">
+      Synchronisation de l'Empire
+    </h2>
+
+    <p className="text-sm text-gray-400">
+      Veuillez patienter...
+    </p>
+
+  </div>
+);
   if (!course) return <div className="p-20 text-center font-black">FORMATION INTROUVABLE</div>;
 
   return (
@@ -265,86 +279,51 @@ const handleLeadCapture = async (authData) => {
         </div>
 
         {/* --- ZONE D'ACTION DYNAMIQUE --- */}
-<div className="mt-8 flex justify-center md:justify-start">
-  
-    
-   <button 
-          // onClick={() => {
-          //   if (course.isFree && isConnectedToThisEmpire) {
-          //     // ✅ DÉJÀ FAN : On entre direct
-          //     if (course.productType === 'Outil') {
-                
-          //       navigate(`/formation/${course._id}`);
-                
-          //     } else {
-          //       const firstId = course.lessons[0]?._id;
-                
-          //       navigate(`/formation/${course._id}/${firstId}`);
-          //     }
-          //   } else if (course.isFree) {
-          //     // 🎁 PAS ENCORE FAN : Popup WhatsApp
-          //     setCaptureModal({ isOpen: true, course: course });
-          //   } else if (!hasAccess) {
-          //     // 💳 PAYANT : Checkout
-          //     navigate(`/empire/checkout/${course._id}`);
-          //   } else {
-          //     // ✅ DÉJÀ PAYÉ
-          //     navigate(`/formation/${course._id}/${course.lessons[0]?._id}`);
-          //   }
-          // }}
-          // className={`px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 ${
-          //   course.isFree ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-900 text-white hover:bg-purple-600'
-          // }`} 
+      <div className="mt-8 flex justify-center md:justify-start">
+      <button
+        onClick={() => {
+          if (!token && !isConnectedToThisEmpire) {
+            setCaptureModal({ isOpen: true, course });
+            return;
+          }
 
-          onClick={() => {
-  // 🔐 ÉTAPE 0 : LA DOUANE (Si pas de token, on arrête tout)
-              if (!token && !isConnectedToThisEmpire) {
-                  setCaptureModal({ isOpen: true, course: course });
-                  return;
-                }
+          if (hasAccess) {
+            const firstLessonId = course.lessons[0]?._id;
+            navigate(`/formation/${course._id}/${firstLessonId}`);
+            return;
+          }
 
-              // ✅ ÉTAPE 1 : SI DÉJÀ PAYÉ OU DÉJÀ INSCRIT (ACCÈS ACTIF)
-              if (hasAccess) {
-                const firstLessonId = course.lessons[0]?._id;
-                navigate(`/formation/${course._id}/${firstLessonId}`);
-                return;
+          if (course.isFree) {
+            if (isConnectedToThisEmpire) {
+              if (course.productType === 'Outil') {
+                navigate(`/formation/${course._id}`);
+              } else {
+                const firstId = course.lessons[0]?._id;
+                navigate(`/formation/${course._id}/${firstId}`);
               }
+            } else {
+              setCaptureModal({ isOpen: true, course });
+            }
+            return;
+          }
 
-              // 🎁 ÉTAPE 2 : CAS DU GRATUIT (CADEAU)
-              if (course.isFree) {
-                if (isConnectedToThisEmpire) {
-                  if (course.productType === 'Outil') {
-                    
-                    navigate(`/formation/${course._id}`);
-                    
-                  } else {
-                    const firstId = course.lessons[0]?._id;
-                    
-                    navigate(`/formation/${course._id}/${firstId}`);
-                  }
-                } else {
-                  setCaptureModal({ isOpen: true, course: course });
-                }
-                return;
-              }
-
-              // 💳 ÉTAPE 3 : CAS DU PAYANT (PAS ENCORE D'ACCÈS)
-              // On retire le dossier "empire" de l'URL pour rester sur ta route propre
-              navigate(`/empire/checkout/${course._id}`);
-            }}
-
-            className={`px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95 ${
-                  (course.isFree || hasAccess)
-                    ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-gray-900 text-white hover:bg-purple-600'
-                }`} 
-              >
-          {course.isFree && token ? "Reprendre ma lecture ✨" : 
-           course.isFree ? "Recevoir mon Cadeau 🎁" : 
-           hasAccess ? "Accéder à mon contenu ✨" : "Débloquer l'Empire ✨"}
-        </button>
-  
-</div>
+          navigate(`/empire/checkout/${course._id}`);
+        }}
+        className={`px-6 py-3 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-[11px] uppercase tracking-wide md:tracking-[0.2em] shadow-lg transition-all active:scale-95 ${
+          (course.isFree || hasAccess)
+            ? 'bg-green-600 text-white hover:bg-green-700'
+            : 'bg-gray-900 text-white hover:bg-purple-600'
+        }`}
+      >
+        {course.isFree && token
+          ? "Continuer"
+          : course.isFree
+          ? "Recevoir le cadeau 🎁"
+          : hasAccess
+          ? "Accéder au contenu"
+          : "Acheter maintenant"}
+      </button>
+    </div>
 
         
       </div>
@@ -353,7 +332,7 @@ const handleLeadCapture = async (authData) => {
 
       <WhatsAppCapture 
         isOpen={captureModal.isOpen}
-        coachId={course.createdBy}
+        coachId={course.createdBy?._id}
         courseTitle={captureModal.course?.title}
         onConfirm={handleLeadCapture}
         onCancel={() => setCaptureModal({ isOpen: false, course: null })}

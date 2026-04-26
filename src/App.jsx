@@ -116,8 +116,6 @@ function App() {
          <PrivateRoute>
             <MyCourses />
           </PrivateRoute>
-        
-
         } />
       <Route path="/empire/:slug/chat" element={<ChatLayout />} />
       <Route path="/empire/checkout/:productId" 

@@ -45,7 +45,9 @@ const PostCard = ({  onDelete,checkAuth,post,fanName,coach,onUpdate,onCommentAdd
   
 
   return (
-    <div className="bg-white rounded-[40px] p-6 shadow-2xl shadow-purple-100/10 border border-purple-50 animate-fadeIn overflow-hidden">
+    
+<div className="w-full md:max-w-2xl bg-white md:rounded-lg shadow-sm border-b border-gray-200 overflow-hidden">
+
       
       {/* HEADER : USER INFO + MENU OPTIONS */}
         <div className="flex items-center justify-between mb-5">
@@ -55,8 +57,8 @@ const PostCard = ({  onDelete,checkAuth,post,fanName,coach,onUpdate,onCommentAdd
               {post.authorName?.charAt(0)}
             </div>
             <div className="text-left">
-              <h4 className="text-sm font-black uppercase italic tracking-tighter text-gray-900">{post.authorName}</h4>
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest italic">Membre de l'Empire</p>
+              <h4 className="text-sm font-black text-[15px] font-bold text-gray-900">{post.authorName}</h4>
+              <p className="text-[13px] text-gray-500 font-normal font-bold  uppercase tracking-widest ">Membre de l'Empire</p>
             </div>
           </div>
 
@@ -83,8 +85,8 @@ const PostCard = ({  onDelete,checkAuth,post,fanName,coach,onUpdate,onCommentAdd
         </div>
 
       {/* --- CONTENU TEXTE --- */}
-      <div className="px-2 mb-5 text-left">
-          <p className="text-gray-600 text-sm leading-relaxed font-medium whitespace-pre-line">
+      <div className="px-4">
+          <p className="text-gray-800 text-sm leading-relaxed font-medium whitespace-pre-line">
             {displayText}
           </p>
           

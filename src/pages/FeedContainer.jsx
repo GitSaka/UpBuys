@@ -247,7 +247,7 @@ const handleResumeAction = async (authData) => {
       <Navbar slug={coach?.slug}/>
 
       {/* 🏰 STRUCTURE EMPIRE (3 COLONNES) */}
-      <div className="max-w-[1400px] mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
+      <div className="max-w-[1400px] mx-auto px-0 md:px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
         
         {/* ⬅️ COLONNE GAUCHE : NAVIGATION (25%) */}
         <aside className="hidden lg:block lg:col-span-3 sticky top-28 h-fit">
@@ -255,10 +255,10 @@ const handleResumeAction = async (authData) => {
         </aside>
 
         {/* 🎯 COLONNE CENTRE : LE FLUX (50%) */}
-        <main className="lg:col-span-6 space-y-8">
+        <main className="lg:col-span-6 space-y-2">
           
           {/* 📱 FILTRES MOBILES (Visibles uniquement sur Mobile) */}
-          <div className="lg:hidden flex gap-3 overflow-x-auto no-scrollbar py-2 -mx-2 px-2 mb-4">
+          <div className="lg:hidden flex gap-3 overflow-x-auto no-scrollbar py-2 mb-4">
              <button onClick={() => setFilter?.('all')} className={`flex-shrink-0 px-6 py-2 rounded-full text-[10px]  uppercase italic shadow-lg ${filter === 'all' ? 'bg-gray-900 text-white font-black' : ' text-purple-600 border-purple-100 hover:bg-purple-50'}`}>✨ Tout</button>
              <button onClick={() => setFilter?.('coach')} className={`flex-shrink-0 px-6 py-2.5 text-purple-600 rounded-full text-[10px]  uppercase italic border border-purple-100 ${filter === 'coach' ? 'bg-gray-900 text-white font-black' : 'border-purple-100 text-purple-700 border-purple-100 hover:bg-purple-100'}`}>👑 Coach</button>
              <button onClick={() => setFilter?.('mine')} className={`flex-shrink-0 px-6 py-2.5 text-purple-600 rounded-full text-[10px] uppercase italic border border-purple-100 ${filter === 'mine' ? 'bg-gray-900 text-white font-black' : 'border-purple-100 text-purple-700 border-purple-100 hover:bg-purple-100'}`}>👤 Mes réussites</button>
@@ -280,22 +280,25 @@ const handleResumeAction = async (authData) => {
                   Synchronisation de l'Empire...
                 </div>
               ) : (
-                <div className="space-y-8">
-                  {filteredPosts.length > 0 ? (
-                    filteredPosts.map(post => <PostCard 
-                     onDelete={handleOpenDelete}
-                      coach={coach}
-                      checkAuth = {checkAuth}
-                      fanName={fanName} 
-                      onUpdate={updatePostInList} 
-                      onCommentAdded={handleAddCommentLocal}
-                      setIswopen = {setIswpen} key={post._id} post={post} />)
-                  ) : (
-                    <div className="p-10 text-center font-black text-gray-300 uppercase italic">
-                      Aucune publication ici pour le moment... ✨
-                    </div>
-                  )}
-                </div>
+             <div className="flex flex-col w-full items-center"> 
+                    {filteredPosts.map(post => (
+                      <div
+                        key={post._id}
+                        className="w-full flex justify-center mb-2 md:mb-4"
+                      >
+                        <PostCard
+                          onDelete={handleOpenDelete}
+                          coach={coach}
+                          checkAuth={checkAuth}
+                          fanName={fanName}
+                          onUpdate={updatePostInList}
+                          onCommentAdded={handleAddCommentLocal}
+                          setIswopen={setIswpen}
+                          post={post}
+                        />
+                      </div>
+                    ))}
+                  </div>
               )}
             </div>
           </div>

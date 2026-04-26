@@ -41,17 +41,7 @@ const handleLeadCapture = (authData) => {
             };
 
         saveFan(fanData)
-        // localStorage.setItem('token', authData.token); 
-       
-
-      // 4. On redirige l'utilisateur vers son cadeau (le lecteur)
-      // On utilise l'ID du cours qu'on avait gardé en mémoire dans l'état du modal
-
-      navigate(`/formation/${captureModal.course._id}/${captureModal.course.lessons[0]}`);
-
-      // localStorage.setItem('fanName', fan.name);
-
-      // 3. On ferme le Popup proprement
+       navigate(`/formation/${captureModal.course._id}/${captureModal.course.lessons[0]}`);
       setCaptureModal({ isOpen: false, course: null });  
 };
 
@@ -78,32 +68,47 @@ useEffect(() => {
        <Navbar slug = {slug}/>
       {/* Header avec Titre Impactant */}
       <header className="pt-20 pb-12 px-6 max-w-4xl mx-auto text-center">
-        <h1 className="text-5xl font-black tracking-tighter text-gray-900 mb-4 uppercase">
-          L'Académie <span className="text-purple-600 text-outline-purple">Privée</span>
-        </h1>
-        <p className="text-gray-500 font-medium text-sm leading-relaxed">
-          Accédez à mes programmes exclusifs et commencez à bâtir votre propre empire numérique dès aujourd'hui.
-        </p>
-      </header>
+
+          <h1 className="text-4xl sm:text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-4 uppercase leading-tight">
+            L'Académie <span className="text-purple-600 text-outline-purple">Privée</span>
+          </h1>
+
+          <p className="text-gray-700 font-medium text-sm sm:text-base leading-relaxed">
+            Accédez à mes programmes exclusifs et commencez à bâtir votre propre empire numérique dès aujourd'hui.
+          </p>
+
+        </header>
 
       {/* Barre de Filtres */}
-      <div className='w-full overflow-hidden mb-12'>
-        <div className="flex gap-3 overflow-x-auto px-6 no-scrollbar md:justify-center">
-        {['Tout', 'Formation','Payant','Gratuits', 'E-book', 'Coaching','Abonnement'].map((filter) => (
-          <button
-            key={filter}
-            onClick={() => setActiveFilter(filter)}
-            className={`whitespace-nowrap px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${
-              activeFilter === filter 
-              ? 'bg-gray-900 text-white shadow-xl shadow-gray-200' 
-              : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
-            }`}
-          >
-            {filter}
-          </button>
-        ))}
-      </div>
-      </div>
+    <div className="relative w-full mb-12">
+
+        {/* fade gauche */}
+        <div className="absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+
+        {/* fade droite */}
+        <div className="absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="flex gap-3 overflow-x-auto px-6 no-scrollbar md:justify-center py-2
+          shadow-inner
+          scroll-smooth
+        ">
+          {['Tout', 'Formation','Payant','Gratuits', 'E-book', 'Coaching','Abonnement'].map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`whitespace-nowrap px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all 
+                ${
+                  activeFilter === filter 
+                  ? 'bg-gray-900 text-white shadow-lg shadow-gray-300 scale-[1.03]' 
+                  : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                }
+              `}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+    </div>
       
 
       {/* Affichage de la Grille */}
@@ -160,7 +165,7 @@ useEffect(() => {
             </p>
           </div>
         )}
-        {/* LE MODAL DE CAPTURE (Placé ici) */}
+        
         <WhatsAppCapture 
           isOpen={captureModal.isOpen}
           courseTitle={captureModal.course?.title}
