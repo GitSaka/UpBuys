@@ -8,7 +8,7 @@ const PrivateRoute = ({ children }) => {
 
   if (!token) {
     // Redirige vers login ou page d'accueil si non connecté
-    return <Navigate to="/" replace />;
+    return <Navigate to="/une-url-qui-n-existe-pas" replace />;
   }
 
   return children;

@@ -151,7 +151,7 @@ useEffect(() => {
     <button 
       onClick={(e) => {
         e.stopPropagation();
-        navigate(`/profile/coach/${coach?.slug}`);
+        navigate(`/empire/profile/coach/${coach?.slug}`);
       }}
       className="px-6 py-2.5 md:px-8 md:py-3 rounded-full bg-white text-gray-900 text-[9px] font-black uppercase tracking-widest hover:bg-purple-600 hover:text-white transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-y-8 md:group-hover:translate-y-0"
     >

@@ -89,8 +89,9 @@ function App() {
       {/* 4. 🎓 ESPACE APPRENTISSAGE (Élèves identifiés) */}
       <Route path="/formation/:courseId/:lessonId?" 
         element={
-          
+          <PrivateRoute>
             <LearningArea />
+          </PrivateRoute>
           
         }
       />
