@@ -174,8 +174,8 @@ console.log(error)
   
       <nav className="px-6 space-y-4 max-w-md mx-auto">
         {[
-          { id: 'feed', icon: '📺', label: 'Contenus Exclusifs', path: `/empire/${coach.slug}/feed` },
-          { id: 'shop', icon: '🛍️', label: 'Boutique & Formations', path: `/empire/${coach.slug}/shop` }
+          { id: 'shop', icon: '🛍️', label: 'Boutique & Formations', path: `/empire/${coach.slug}/shop` },
+          { id: 'feed', icon: '📺', label: 'Contenus Exclusifs', path: `/empire/${coach.slug}/feed` }
         ].map((item) => (
           <button 
             key={item.id}
