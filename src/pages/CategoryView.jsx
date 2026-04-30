@@ -39,11 +39,27 @@ useEffect(() => {
     fetchCoaches();
   }, [category]);
 
-    if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-white font-black text-gray-300 animate-pulse uppercase tracking-[0.3em]">
+   if (loading) return (
+  <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 space-y-6">
+
+    <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+
+    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-gray-800 animate-pulse">
       Ouverture de l'Empire...
-    </div>
-  );
+    </h2>
+
+    <p className="text-sm text-gray-400">
+      Veuillez patienter...
+    </p>
+
+  </div>
+);
+
+  //   if (loading) return (
+  //   <div className="min-h-screen flex items-center justify-center bg-white font-black text-gray-300 animate-pulse uppercase tracking-[0.3em]">
+  //     Ouverture de l'Empire...
+  //   </div>
+  // );
 
   return (
     <div className="min-h-screen bg-white font-sans italic-none text-gray-900 overflow-x-hidden">

@@ -69,7 +69,7 @@ const Navbar = () => {
             {/* Menu PC Classique */}
             {isCoachSpace && (
               <div className="hidden lg:flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 italic">
-                <button onClick={() => navigate(`/empire/${slug}/my-courses`)} className={`hover:text-purple-600 ${location.pathname.includes('My-courses') ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : ''}`}>MyCourses</button>
+                <button onClick={() => navigate(`/empire/${slug}/my-courses`)} className={`hover:text-purple-600 ${location.pathname.includes('my-courses') ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : ''}`}>MyCourses</button>
                 <button onClick={() => navigate(`/empire/${slug}/feed`)} className={`hover:text-purple-600 ${location.pathname.includes('feed') ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : ''}`}>Journal</button>
                 <button onClick={() => navigate(`/empire/${slug}/shop`)} className={`hover:text-purple-600 ${location.pathname.includes('shop') ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : ''}`}>Boutique</button>
                 {/* <button onClick={() => navigate(`/${slug}/chat`)} className={`hover:text-purple-600 ${location.pathname.includes('chat') ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : ''}`}>Discussion</button> */}

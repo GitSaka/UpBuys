@@ -137,12 +137,26 @@ const handleSwitchEmpire = async (targetMaster) => {
 };
 
  
+ if (loading)   return (
+  <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 space-y-6">
 
-  if (loading) return (
-  <div className="min-h-screen flex items-center justify-center bg-white font-black text-gray-300 animate-pulse uppercase tracking-widest text-[10px]">
-    Ouverture de votre Espace Privé... 🗝️
+    <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+
+    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-gray-800 animate-pulse">
+      Ouverture de votre Espace Privé... 🗝️
+    </h2>
+
+    <p className="text-sm text-gray-400">
+      Veuillez patienter...
+    </p>
+
   </div>
 );
+//   if (loading) return (
+//   <div className="min-h-screen flex items-center justify-center bg-white font-black text-gray-300 animate-pulse uppercase tracking-widest text-[10px]">
+//     Ouverture de votre Espace Privé... 🗝️
+//   </div>
+// );
   return (
     <div className="min-h-screen bg-white font-sans italic-none">
       <Navbar />

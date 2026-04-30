@@ -120,8 +120,8 @@ const handleLeadCapture = async (authData) => {
 
     <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
 
-    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-gray-800">
-      Synchronisation de l'Empire
+    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest animate-pulse text-gray-800">
+     Ouverture de la page details
     </h2>
 
     <p className="text-sm text-gray-400">

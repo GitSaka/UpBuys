@@ -237,7 +237,23 @@ const handleResumeAction = async (authData) => {
   // }
 };
 
-  if (loading) return <div className="p-20 text-center font-black animate-pulse uppercase">Chargement de l'Empire...</div>;
+if (loading)   return (
+  <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 space-y-6">
+
+    <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+
+    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-gray-800">
+      Chargement du journal..
+    </h2>
+
+    <p className="text-sm text-gray-400">
+      Veuillez patienter...
+    </p>
+
+  </div>
+);
+
+  // if (loading) return <div className="p-20 text-center font-black animate-pulse uppercase">Chargement du journal...</div>;
 
 
   return (
