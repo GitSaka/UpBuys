@@ -1,6 +1,6 @@
 // src/pages/LearningArea.jsx
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 // import axios from 'axios';
 import ChapterList from '../components/ChapterList';
 import ReactPlayer from 'react-player';
@@ -315,7 +315,10 @@ useEffect(() => {
     {course.productType === 'Metier' && (
       <div className="w-full lg:w-[400px] bg-white border-l border-gray-100 h-screen overflow-y-auto p-6 hidden lg:block no-scrollbar">
         <div className="flex items-center gap-3 mb-8">
-            <img src={course.createdBy?.avatar} className="w-8 h-8 rounded-full object-cover" alt="Coach" />
+          <Link to={`/empire/profile/coach/${course?.createdBy.slug}`}>
+            <img src={course.createdBy?.avatar} className="w-14 h-14 rounded-full object-cover border-2 border-purple-100" />
+          </Link>
+
             <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Formation par {course.createdBy?.storeName}</span>
         </div>
         <h3 className="font-black text-xl mb-6 tracking-tighter uppercase italic">Programme</h3>

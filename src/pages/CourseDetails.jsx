@@ -148,7 +148,7 @@ const handleLeadCapture = async (authData) => {
           
           {/* COACH IDENTITY */}
           <div className="flex items-center gap-3 mb-8">
-            <Link to={`/profile/coach/${course?.createdBy.slug}`}>
+            <Link to={`/empire/profile/coach/${course?.createdBy.slug}`}>
             <img src={course.createdBy?.avatar} className="w-14 h-14 rounded-full object-cover border-2 border-purple-100" />
             </Link>
             <div>
