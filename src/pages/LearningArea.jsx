@@ -10,6 +10,7 @@ import { getAuthToken } from '../services/feedService';
 import { jwtDecode } from 'jwt-decode';
 import api from '../services/api';
 
+
 const LearningArea = () => {
   const { courseId, lessonId } = useParams();
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const LearningArea = () => {
 
 useEffect(() => {
   const fetchEverything = async () => {
-    
+        let coachSlug = ""; 
     try {
       setLoading(true);
       setIsVideoLoading(true);
@@ -62,7 +63,7 @@ useEffect(() => {
       const data = res.data.data;
       setCourse(data);
       setLikeCount(data.totalLikes || 0);
-
+      coachSlug = data.createdBy?.slug;
       const isCoachOfThisEmpire =
         token && decoded?.coachId === data?.createdBy?._id;
 
@@ -101,7 +102,11 @@ useEffect(() => {
 
     } catch (err) {
       console.error("Erreur d'accès à l'Empire :", err);
-      navigate(`/empire/${course?.createdBy?.slug}/shop`);
+       if (coachSlug) {
+        navigate(`/empire/${coachSlug}/shop`);
+      } else {
+        navigate("/une-url-qui-n-existe-pas");  // Redirection de secours si tout plante
+      }
     } finally {
       setLoading(false);
       setIsVideoLoading(false);

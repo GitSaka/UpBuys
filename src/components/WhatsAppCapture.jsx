@@ -15,12 +15,7 @@ const WhatsAppCapture = ({ isOpen, coachId, onConfirm, onCancel }) => {
 
   // 1. Détecter si la saisie est un email
   const isEmailSaisi = identifier.includes('@');
-  console.log({
-        identifier: identifier.trim().toLowerCase(),
-        type: isEmailSaisi ? 'EMAIL' : 'PHONE',
-        countryCode: isEmailSaisi ? null : countryCode,
-        coachId
-      })
+
   const handleCheckPhone = async (e) => {
     e.preventDefault();
     setIsLoading(true);

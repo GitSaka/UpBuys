@@ -36,6 +36,7 @@ import SuccessPage from "./pages/SuccessPage";
 import MyCourses from "./pages/MyCourses";
 import UserProfile from "./pages/MyPofile";
 import PrivateRoute from "./components/PrivateRoute";
+import NotFoundEmpire from "./pages/NotFoundEmpire";
 
 function App() {
   const dispatch = useDispatch();
@@ -129,7 +130,10 @@ function App() {
        {/* --- ROUTE DE SUCCÈS POUR L'ÉLÈVE --- */}
       <Route path="/empire/success/:transactionId" element={<SuccessPage />} />
       {/* 404 / Sécurité */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Si aucune route ne correspond, on affiche la page 404 stylée */}
+       <Route path="*" element={<NotFoundEmpire />} />
+       <Route path="/une-url-qui-n-existe-pas" element={<NotFoundEmpire />} />
+
     </Routes>
   );
 }
