@@ -65,7 +65,7 @@ const confirmDelete = async () => {
           }
 };
 
- 
+ console.log(courses)
   
  if (loading) return <div className="p-20 text-center font-black animate-pulse uppercase tracking-[0.3em] text-gray-900">Ouverture en cours...</div>;
   return (
@@ -135,7 +135,7 @@ const confirmDelete = async () => {
                               <span className="flex items-center gap-1 text-xs font-bold text-purple-600">❤️ {course.totalLikes}</span>
                             </td>
                             <td className="p-6">
-                              <span className="text-xs font-black text-gray-900 bg-orange-50 text-orange-600 px-3 py-1 rounded-full italic">🔥 {course.salesCount}</span>
+                              <span className="text-xs font-black text-gray-900 bg-orange-50 text-orange-600 px-3 py-1 rounded-full italic">🔥{course.totalSales}</span>
                             </td>
                             {/* Nouvelle Colonne Statut */}
                           <td className="p-6 text-center">
