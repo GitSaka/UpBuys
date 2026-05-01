@@ -81,6 +81,7 @@ const EditCourse = () => {
     category: 'Mode & Design', pricingType: 'Unique', isFree: false, 
     productType: 'Metier', materials: [], descriptionLong: '', mainFileUrl: '' 
   });
+  console.log(uploadingIndex)
   const [lessons, setLessons] = useState([]);
   const [statusModal, setStatusModal] = useState({ isOpen: false, mode: 'info', title: '', message: '' });
 
@@ -167,7 +168,7 @@ const EditCourse = () => {
        console.log(err)} finally { setSaving(false); }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center font-black text-gray-200 uppercase animate-pulse italic">Synchronisation...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center font-black text-gray-900 uppercase animate-pulse italic">Synchronisation...</div>;
 
   return (
     <div className="p-4 lg:p-10 bg-white min-h-screen text-left italic-none">
