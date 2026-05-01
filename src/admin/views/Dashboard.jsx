@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, Cell } from "recharts";
 import api from '../services/api'
 // Données mises à jour avec les formations (LMS)
@@ -21,13 +21,13 @@ const TOP_COURSES = [
 
 const Dashboard = () => {
 
-    const [stats, setStats] = React.useState(null);
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
+  console.log(stats)
+    useEffect(() => {
       const fetchStats = async () => {
         try {
-          const res = await api.get('/admin/stats'); // Vérifie bien le nom de ta route
+          const res = await api.get('/coach/stats'); // Vérifie bien le nom de ta route
           setStats(res.data.data);
         } catch (err) {
           console.error("Erreur stats:", err);
