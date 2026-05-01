@@ -1,6 +1,6 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, Cell } from "recharts";
-
+import api from '../services/api'
 // Données mises à jour avec les formations (LMS)
 const DATA = [
   { day: 'Lun', sales: 45000, fans: 120, ventes: 5, likes: 45 },
@@ -20,6 +20,26 @@ const TOP_COURSES = [
 ];
 
 const Dashboard = () => {
+
+    const [stats, setStats] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+      const fetchStats = async () => {
+        try {
+          const res = await api.get('/admin/stats'); // Vérifie bien le nom de ta route
+          setStats(res.data.data);
+        } catch (err) {
+          console.error("Erreur stats:", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchStats();
+    }, []);
+
+    if (loading) return <div className="p-20 text-center font-black animate-pulse">CHARGEMENT...</div>;
+
   return (
     <div className="pb-10">
       {/* 1. CARTES DE STATISTIQUES (Mises à jour) */}
@@ -27,13 +47,15 @@ const Dashboard = () => {
         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm text-left">
           <p className="text-[9px] font-black uppercase text-gray-400 mb-2 tracking-widest italic">Total Revenus</p>
           <div className="flex items-end gap-2 text-gray-900">
-            <span className="text-2xl font-black italic">383.000 <small className="text-[10px]">CFA</small></span>
+            <span className="text-2xl font-black italic">
+               {stats.totalRevenue?.toLocaleString()} <small className="text-[10px]">CFA</small>
+              </span>
           </div>
         </div>
         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm text-left">
           <p className="text-[9px] font-black uppercase text-gray-400 mb-2 tracking-widest">Total Ventes</p>
           <div className="flex items-end gap-2 text-gray-900">
-            <span className="text-2xl font-black">42</span>
+            <span className="text-2xl font-black">{stats.totalSales}</span>
             <span className="text-[10px] font-bold text-green-500 mb-1">+8% 🔥</span>
           </div>
         </div>
@@ -47,7 +69,7 @@ const Dashboard = () => {
         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm text-left">
           <p className="text-[9px] font-black uppercase text-gray-400 mb-2 tracking-widest">Fans Privés</p>
           <div className="flex items-end gap-2 text-gray-900">
-            <span className="text-2xl font-black">1.240</span>
+            <span className="text-2xl font-black">{stats.totalFans}</span>
           </div>
         </div>
       </div>
@@ -58,7 +80,7 @@ const Dashboard = () => {
           <h2 className="text-[10px] font-black uppercase text-gray-900 mb-8 tracking-[0.2em]">💰 Performance Financière (CFA)</h2>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={DATA}>
+              <AreaChart data={stats.chartData}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.2}/>
@@ -66,7 +88,7 @@ const Dashboard = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F9FAFB" />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#9CA3AF' }} />
+                <XAxis dataKey="_id" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#9CA3AF' }} />
                 <Tooltip contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }} />
                 <Area type="monotone" dataKey="sales" stroke="#7C3AED" strokeWidth={4} fillOpacity={1} fill="url(#colorSales)" />
               </AreaChart>
@@ -79,7 +101,7 @@ const Dashboard = () => {
           <h2 className="text-[10px] font-black uppercase text-gray-900 mb-8 tracking-[0.2em]">🏆 Top Formations (Ventes)</h2>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart layout="vertical" data={TOP_COURSES} margin={{ left: 20 }}>
+              <BarChart layout="vertical" data={stats.topCourses} margin={{ left: 20 }}>
                 <XAxis type="number" hide />
                 <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'black', fill: '#111827' }} />
                 <Tooltip cursor={{fill: 'transparent'}} />
