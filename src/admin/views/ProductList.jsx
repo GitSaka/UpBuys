@@ -135,7 +135,7 @@ const confirmDelete = async () => {
                               <span className="flex items-center gap-1 text-xs font-bold text-purple-600">❤️ {course.totalLikes}</span>
                             </td>
                             <td className="p-6">
-                              <span className="text-xs font-black text-gray-900 bg-orange-50 text-orange-600 px-3 py-1 rounded-full italic">🔥{course.totalSales}</span>
+                              <span className="text-xs font-black text-gray-900 bg-orange-50 text-orange-600 px-3 py-1 rounded-full italic">🔥{course.salesCount}</span>
                             </td>
                             {/* Nouvelle Colonne Statut */}
                           <td className="p-6 text-center">
