@@ -67,7 +67,7 @@ const confirmDelete = async () => {
 
  
   
- if (loading) return <div className="p-20 text-center font-black animate-pulse uppercase tracking-[0.3em] text-gray-300">Synchronisation de l'Empire...</div>;
+ if (loading) return <div className="p-20 text-center font-black animate-pulse uppercase tracking-[0.3em] text-gray-900">Ouverture en cours...</div>;
   return (
     <div className="animate-fadeIn pb-10">
       {/* HEADER : Recherche + Nouveau Bouton */}
