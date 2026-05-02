@@ -12,20 +12,21 @@ const SuccessPage = () => {
   useEffect(() => {
     let interval;
 
-    const checkStatus = async () => {
+      const checkStatus = async () => {
       try {
-        const res = await api.get(`/payments/verify-status/${transactionId}`);
+        const res = await api.get(`/verify-status/${transactionId}`); // Utilise ta route details
         
-        if (res.data.status === 'approved') {
-          setCourseData(res.data.course);
+        // 🕵️ On regarde dans res.data.data.status
+        if (res.data.data && res.data.data.status === 'approved') {
+          setCourseData(res.data.data.courseId); // On récupère les infos du cours peuplées
           setStatus('approved');
-          clearInterval(interval); // Stop quand c'est bon
+          clearInterval(interval);
         }
       } catch (err) {
         console.error("Erreur de vérification", err);
-        // On ne coupe pas l'intervalle ici, on laisse retenter
       }
-    };
+        };
+
 
     // On vérifie immédiatement, puis toutes les 3 secondes
     checkStatus();
