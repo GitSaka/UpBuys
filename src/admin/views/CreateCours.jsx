@@ -13,6 +13,9 @@ import api from '../services/api'
 import { uploadToCloudinary }from '../components/courses/UploadCloudiry.jsx'
 import axios from "axios";
 import { Image } from '@tiptap/extension-image';
+import RichEditor from '../tiptap/RichEdictor.jsx';
+
+
 
 
 
@@ -69,8 +72,7 @@ const CreateCourse = () => {
        });
 
   const [uploadProgress, setUploadProgress] = useState({}); 
-// On utilise un objet {} pour pouvoir suivre plusieurs leçons en même temps
-       console.log(course)
+
   const [lessons, setLessons] = useState([{attachmentName:'',title: '', type: 'video', mediaUrl: '', duration: '', description: '', isFree: false }]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
@@ -870,8 +872,8 @@ const removeMaterial = (index) => {
       {lesson.type === 'text' ? (
         <div className="space-y-2">
           <label className="text-[9px] font-black text-purple-400 uppercase ml-2">Contenu de la leçon écrite ✨</label>
-          <LessonEditor 
-            initialContent={lesson.description} 
+           <RichEditor 
+            content={lesson.description} 
             onChange={(html) => handleLessonChange(index, 'description', html)} 
           />
         </div>

@@ -161,6 +161,10 @@ const confirmDelete = async () => {
                                 <button 
                                   onClick={() => navigate(`/admin/edit-course/${course._id}`)}
                                   className="p-3 bg-gray-50 rounded-xl hover:bg-gray-900 hover:text-white transition-all"
+                                >✏️</button>
+                                <button 
+                                  onClick={() => window.open(`https://up-buys.vercel.app/academie/${course._id}`, '_blank')}
+                                  className="p-3 bg-gray-50 rounded-xl hover:bg-gray-900 hover:text-white transition-all"
                                 >👁️</button>
                                 <button 
                                   onClick={() => openDeleteModal(course._id, course.title)}
