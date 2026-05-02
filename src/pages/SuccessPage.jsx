@@ -1,88 +1,112 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
+import api from '../services/api';
 
 const SuccessPage = () => {
   const { transactionId } = useParams();
   const navigate = useNavigate();
-  const [verifying, setVerifying] = useState(true);
+  const [status, setStatus] = useState('verifying'); // verifying, approved, error
+  const [courseData, setCourseData] = useState(null);
 
   useEffect(() => {
-    // 🕵️ Simule une vérification de 2 secondes auprès du Backend
-    const timer = setTimeout(() => {
-      setVerifying(false);
-      // ICI : On lancera l'appel API réelle vers ton Webhook/Verify
-    }, 2500);
-    return () => clearTimeout(timer);
+    let interval;
+
+    const checkStatus = async () => {
+      try {
+        const res = await api.get(`/payments/verify-status/${transactionId}`);
+        
+        if (res.data.status === 'approved') {
+          setCourseData(res.data.course);
+          setStatus('approved');
+          clearInterval(interval); // Stop quand c'est bon
+        }
+      } catch (err) {
+        console.error("Erreur de vérification", err);
+        // On ne coupe pas l'intervalle ici, on laisse retenter
+      }
+    };
+
+    // On vérifie immédiatement, puis toutes les 3 secondes
+    checkStatus();
+    interval = setInterval(checkStatus, 3000);
+
+    return () => clearInterval(interval);
   }, [transactionId]);
 
   return (
-    <div className="min-h-screen bg-white font-sans italic-none overflow-hidden">
+    <div className="min-h-screen bg-white font-sans overflow-hidden text-left">
       <Navbar />
 
       <main className="pt-32 pb-20 px-6 flex flex-col items-center text-center max-w-2xl mx-auto">
         
-        {/* 1. L'ICÔNE DE VICTOIRE (ANIMÉE) */}
+        {/* 1. L'ICÔNE DE VICTOIRE */}
         <div className="relative mb-10">
-          <div className="w-24 h-24 bg-purple-50 rounded-[35px] flex items-center justify-center text-4xl shadow-2xl shadow-purple-100 animate-bounce">
-            🎉
+          <div className={`${status === 'approved' ? 'bg-green-50' : 'bg-purple-50'} w-24 h-24 rounded-[35px] flex items-center justify-center text-4xl shadow-2xl transition-colors duration-500 animate-bounce`}>
+            {status === 'approved' ? '👑' : '🎉'}
           </div>
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white text-[10px] font-black">
-            ✓
-          </div>
+          {status === 'approved' && (
+            <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center text-white text-[10px] font-black">
+              ✓
+            </div>
+          )}
         </div>
 
         {/* 2. LE MESSAGE SOUVERAIN */}
         <div className="space-y-4">
           <h1 className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter leading-none text-gray-900">
-            Félicitations <br /> 
+            {status === 'approved' ? 'Accès Débloqué' : 'Félicitations'} <br /> 
             <span className="text-purple-600">Maître en Devenir</span>
           </h1>
-          
-          <div className="h-[2px] w-12 bg-gray-100 mx-auto"></div>
-
           <p className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-400 italic">
-            Votre investissement est validé avec succès
+            {status === 'approved' ? 'Bienvenue dans votre nouvel empire' : 'Sécurisation de votre investissement...'}
           </p>
         </div>
 
-        {/* 3. L'ÉTAT DE VÉRIFICATION */}
+        {/* 3. L'ÉTAT DE VÉRIFICATION / BOUTON FINAL */}
         <div className="mt-16 w-full">
-          {verifying ? (
+          {status === 'verifying' ? (
             <div className="flex flex-col items-center space-y-4">
               <div className="w-10 h-10 border-4 border-purple-100 border-t-purple-600 rounded-full animate-spin"></div>
-              <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest animate-pulse">
-                Sécurisation de votre accès...
+              <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest animate-pulse italic">
+                Nous confirmons la réception de vos fonds...
               </p>
             </div>
           ) : (
             <div className="space-y-8 animate-fadeIn">
-              <div className="bg-gray-50 rounded-[40px] p-8 border border-gray-100">
-                <p className="text-sm text-gray-500 font-medium leading-relaxed italic mb-6">
-                  "L'argent est le serviteur de l'esprit. Votre formation est désormais débloquée dans votre espace membre."
-                </p>
-                <div className="flex items-center justify-center gap-3 text-[9px] font-black uppercase text-gray-300">
-                  <span className="w-6 h-[1px] bg-gray-200"></span>
-                  Réf: {transactionId?.slice(0, 12)}...
-                  <span className="w-6 h-[1px] bg-gray-200"></span>
+              <div className="bg-gray-50 rounded-[40px] p-8 border border-gray-100 text-left flex items-center gap-6">
+                <img 
+                    src={courseData?.thumbnail} 
+                    className="w-16 h-16 rounded-2xl object-cover shadow-lg border-2 border-white" 
+                    alt="Formation"
+                />
+                <div>
+                    <p className="text-[9px] font-black text-purple-600 uppercase tracking-widest mb-1 italic">Formation active :</p>
+                    <h2 className="text-sm font-black text-gray-900 uppercase italic leading-tight">{courseData?.title}</h2>
                 </div>
               </div>
 
               {/* BOUTON D'ACCÈS FINAL */}
               <button 
-                onClick={() => navigate('/formation/active')} 
+                onClick={() => {
+                    const firstLessonId = courseData?.lessons[0]?._id || courseData?.lessons[0];
+                    navigate(`/formation/${courseData?._id}/${firstLessonId}`);
+                }} 
                 className="w-full bg-gray-900 text-white py-6 rounded-[25px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-purple-200 hover:bg-purple-600 transition-all active:scale-95"
               >
-                Commencer ma formation →
+                Entrer dans l'Académie →
               </button>
+
+              <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">
+                Un reçu a été envoyé à votre adresse email.
+              </p>
             </div>
           )}
         </div>
       </main>
 
-      {/* DÉCORATION DE FOND (DISCRÈTE) */}
+      {/* DÉCORATION DE FOND */}
       <div className="fixed -bottom-20 -left-20 w-64 h-64 bg-purple-50 rounded-full blur-[120px] opacity-60"></div>
-      <div className="fixed -top-20 -right-20 w-64 h-64 bg-purple-50 rounded-full blur-[120px] opacity-60"></div>
     </div>
   );
 };

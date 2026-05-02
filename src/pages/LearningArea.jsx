@@ -236,6 +236,17 @@ useEffect(() => {
                     <audio controls src={currentLesson.mediaUrl} className="w-full max-w-md" />
                   </div>
                 )}
+
+                {/* 🎯 AJOUT DU CAS PDF DANS LA ZONE NOIRE (Plus Luxe) */}
+                    {currentLesson.type === 'pdf' && (
+                      <div className="flex flex-col items-center justify-center h-full bg-gray-900 p-10 text-center">
+                        <span className="text-6xl mb-4">📄</span>
+                        <h4 className="text-white font-black text-xs uppercase tracking-widest mb-6">{currentLesson.title}</h4>
+                        <a href={currentLesson.mediaUrl} target="_blank" rel="noreferrer" className="bg-purple-600 text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+                          👁️ Consulter le PDF
+                        </a>
+                      </div>
+                    )}
               </div>
             </div>
           ) : (
