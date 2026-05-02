@@ -37,6 +37,9 @@ import MyCourses from "./pages/MyCourses";
 import UserProfile from "./pages/MyPofile";
 import PrivateRoute from "./components/PrivateRoute";
 import NotFoundEmpire from "./pages/NotFoundEmpire";
+import Wallet from "./admin/views/Wallet";
+import SuperAdminPayouts from "./admin/views/SuperAdminPayouts";
+import SalesHistory from "./admin/views/SalesHistory";
 
 function App() {
   const dispatch = useDispatch();
@@ -83,6 +86,9 @@ function App() {
           <Route path="/admin/success/:courseId" element={<AdminSuccess />} />
           <Route path="/admin/audiance" element={<Audience />} />
           <Route path="/admin/profile/:slug" element={<Settings />} />  
+          <Route path="/admin/wallet" element={<Wallet />} />  
+          <Route path="/admin/super-admin" element={<SuperAdminPayouts />} />  
+          <Route path="/admin/ventes" element={<SalesHistory />} />  
         </Route>
       </Route>
 

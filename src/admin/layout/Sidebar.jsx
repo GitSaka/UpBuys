@@ -24,7 +24,13 @@ const Sidebar = ({ isOpen, onClose }) => {
     },
     {
       id:3,
-      name:"Mes Ventes"
+      name:"Mes Ventes",
+      path:"/admin/ventes"
+    },
+    {
+      id:3,
+      name:"Retraits",
+      path:"/admin/wallet"
     },
     {
       id:4,
