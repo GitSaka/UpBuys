@@ -14,7 +14,7 @@ const SuccessPage = () => {
 
       const checkStatus = async () => {
       try {
-        const res = await api.get(`/verify-status/${transactionId}`); // Utilise ta route details
+        const res = await api.get(`/payments/verify-status/${transactionId}`); // Utilise ta route details
         
         // 🕵️ On regarde dans res.data.data.status
         if (res.data.data && res.data.data.status === 'approved') {
