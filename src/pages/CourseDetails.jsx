@@ -7,10 +7,12 @@ import WhatsAppCapture from '../components/WhatsAppCapture';
 import { getAuthToken, saveFan } from '../services/feedService';
 import { jwtDecode } from "jwt-decode";
 import api from '../services/api';
+ // 'verifying', 'granted', 'denied'
+
 
 const CourseDetails = () => {
   const { coursesId } = useParams();
-  
+  const [accessStatus, setAccessStatus] = useState('verifying');
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,12 +38,7 @@ const CourseDetails = () => {
     fetchDetails();
   }, [coursesId]);
 
-
-
- 
-
-
-      let decoded = null;
+  let decoded = null;
   
       if (token) {
         decoded = jwtDecode(token);
@@ -52,68 +49,111 @@ const CourseDetails = () => {
       const isConnectedToThisEmpire =
         token && decoded?.coachId === course?.createdBy._id;
 
-//verification si c'est deja payer ou pas
+      //verification si c'est deja payer ou pas
 
-useEffect(() => {
-  const checkMyAccess = async () => {
-    try {
+      useEffect(() => {
+        const checkMyAccess = async () => {
+          try {
+            
+            // 🛰️ On demande au serveur : "Est-ce que cet élève possède ce cours ?"
+            const res = await api.get(`/payments/check/${course?._id}`);
+            if (res.data.hasAccess) {
+                setAccessStatus('granted');
+              } else {
+                setAccessStatus('denied');
+            }
+            setHasAccess(res.data.hasAccess); // Sera true ou false selon la BDD
+          } catch (err) {
+            console.log(err)
+            setHasAccess(false); // Par défaut, pas d'accès
+          }
+        };
+
+        if (token && course?._id) checkMyAccess();
+      }, [course?._id, token]);
+
+      // 2. LOGIQUE DE CAPTURE WHATSAPP
+      const handleLeadCapture = async (authData) => {
+        // 1️⃣ Sauvegarde du badge
+        const { success,fanName,tel,id,token } = authData;
+        
+                    const fanData = {
+                      isSakaFan: success,
+                      fanName,
+                      tel,
+                      id,
+                      token,
+                      slug:course?.createdBy.slug
+                    };
+        
+                saveFan(fanData)
+        // 2️⃣ Fermeture du popup
+        setCaptureModal({ isOpen: false, course: null });
       
-      // 🛰️ On demande au serveur : "Est-ce que cet élève possède ce cours ?"
-      const res = await api.get(`/payments/check/${course?._id}`);
-      setHasAccess(res.data.hasAccess); // Sera true ou false selon la BDD
-    } catch (err) {
-      console.log(err)
-      setHasAccess(false); // Par défaut, pas d'accès
-    }
-  };
+        // 3️⃣ Vérifier l'accès réel
+        try {
+          const res = await api.get(`/payments/check/${course._id}`);
+          const hasAccess = res.data.hasAccess;
 
-  if (token && course?._id) checkMyAccess();
-}, [course?._id, token]);
+          // 4️⃣ Redirection intelligente
+          if (course.isFree || hasAccess) {
+            // 🎁 Gratuit ou déjà payé : on ouvre le cours
+            if (course.productType === 'Outil') {
+              navigate(`/formation/${course._id}`);
+            } else {
+              const firstLessonId = course.lessons[0]?._id;
+              navigate(`/formation/${course._id}/${firstLessonId}`);
+            }
+            console.log("Accès au cours accordé !");
+          } else {
+            // 💳 Payant et non débloqué : checkout
+            navigate(`/empire/checkout/${course._id}`);
+            console.log("Direction le Checkout pour le paiement... 💰");
+          }
 
- // 2. LOGIQUE DE CAPTURE WHATSAPP
-const handleLeadCapture = async (authData) => {
-  // 1️⃣ Sauvegarde du badge
-   const { success,fanName,tel,id,token } = authData;
-  
-              const fanData = {
-                isSakaFan: success,
-                fanName,
-                tel,
-                id,
-                token,
-                slug:course?.createdBy.slug
-              };
-  
-          saveFan(fanData)
-  // 2️⃣ Fermeture du popup
-  setCaptureModal({ isOpen: false, course: null });
- 
-  // 3️⃣ Vérifier l'accès réel
-  try {
-    const res = await api.get(`/payments/check/${course._id}`);
-    const hasAccess = res.data.hasAccess;
+        } catch (err) {
+          console.error("Erreur lors de la vérification d'accès :", err);
+          alert("Impossible de vérifier l'accès au cours pour le moment. ❌");
+        }
+      };
 
-    // 4️⃣ Redirection intelligente
-    if (course.isFree || hasAccess) {
-      // 🎁 Gratuit ou déjà payé : on ouvre le cours
-      if (course.productType === 'Outil') {
-        navigate(`/formation/${course._id}`);
-      } else {
-        const firstLessonId = course.lessons[0]?._id;
-        navigate(`/formation/${course._id}/${firstLessonId}`);
+    const handleMainAction = () => {
+      // 1. Sécurité : si ça charge, on bloque
+      if (accessStatus === 'verifying') return;
+
+      // 2. Gestion de l'accès (Prospect / Lead)
+      if (!token) {
+        setCaptureModal({ isOpen: true, course });
+        return;
       }
-      console.log("Accès au cours accordé !");
-    } else {
-      // 💳 Payant et non débloqué : checkout
-      navigate(`/empire/checkout/${course._id}`);
-      console.log("Direction le Checkout pour le paiement... 💰");
-    }
 
-  } catch (err) {
-    console.error("Erreur lors de la vérification d'accès :", err);
-    alert("Impossible de vérifier l'accès au cours pour le moment. ❌");
-  }
-};
+      // 3. Gestion de l'accès autorisé (Payé ou Gratuit et Connecté)
+      if (accessStatus === 'granted' || (course.isFree && isConnectedToThisEmpire)) {
+          
+      const firstId = Array.isArray(course.lessons) && course.lessons.length > 0 
+                      ? course.lessons[0]._id 
+                      : null;
+
+        
+        if (course.productType === 'Outil') {
+          navigate(`/formation/${course._id}`);
+        } else {
+          // On redirige vers la première leçon ou la racine si vide
+          navigate(`/formation/${course._id}${firstId ? `/${firstId}` : ''}`);
+        }
+        return;
+      }
+
+      // 4. Cas Spécial Gratuit (Besoin de capture avant accès)
+      if (course.isFree && !isConnectedToThisEmpire) {
+        setCaptureModal({ isOpen: true, course });
+        return;
+      }
+
+      // 5. Par défaut : Vendre
+      navigate(`/empire/checkout/${course._id}`);
+    };
+
 
   if (loading) return (
   <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 space-y-6">
@@ -280,7 +320,23 @@ const handleLeadCapture = async (authData) => {
 
         {/* --- ZONE D'ACTION DYNAMIQUE --- */}
       <div className="mt-8 flex justify-center md:justify-start">
-      <button
+        <button
+              onClick={handleMainAction}
+              disabled={accessStatus === 'verifying'}
+              className={`px-6 py-3 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-[11px] uppercase tracking-wide md:tracking-[0.2em] shadow-lg transition-all active:scale-95 ${
+                accessStatus === 'verifying'
+                  ? 'bg-gray-100 text-gray-400'
+                  : (course.isFree || accessStatus === 'granted')
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-gray-900 text-white hover:bg-purple-600'
+              }`}
+            >
+              {accessStatus === 'verifying' ? "verification..." : (
+                (course.isFree || accessStatus === 'granted') ? "Accéder au contenu" : "Acheter maintenant"
+              )}
+        </button>
+
+      {/* <button
         onClick={() => {
           if (!token && !isConnectedToThisEmpire) {
             setCaptureModal({ isOpen: true, course });
@@ -322,14 +378,9 @@ const handleLeadCapture = async (authData) => {
           : hasAccess
           ? "Accéder au contenu"
           : "Acheter maintenant"}
-      </button>
-    </div>
-
-        
+      </button> */}
+    </div> 
       </div>
-
-
-
       <WhatsAppCapture 
         isOpen={captureModal.isOpen}
         coachId={course.createdBy?._id}

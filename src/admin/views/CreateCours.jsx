@@ -387,7 +387,12 @@ const handlePublish = async (e) => {
   const finalData = {
     ...course,
     descriptionLong: editor.getHTML(),
-    lessons: course.productType === 'Metier' ? lessons : [],
+    // lessons: course.productType === 'Metier' ? lessons : [],
+    lessons: course.productType === 'Metier' ? lessons.map(l => ({
+      ...l,
+      // Si c'est un lien YouTube, on force la source, sinon par défaut Cloudinary
+      videoSource: l.videoSource || 'cloudinary' 
+    })) : [],
     price: course.isFree ? 0 : course.price
   };
 
@@ -445,6 +450,12 @@ const handlePublish = async (e) => {
   const handleVideoUpload = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
+
+     // 🛡️ Sécurité : Si la leçon est configurée sur YouTube, on n'upload pas
+  if (lessons[index].videoSource === 'youtube') {
+    alert("Vous êtes en mode Lien YouTube. Changez pour 'Fichier Local' si vous voulez uploader.");
+    return;
+  }
 
     e.target.value = null; // 🔑 Permet de re-sélectionner le même fichier
 
@@ -809,64 +820,109 @@ const removeMaterial = (index) => {
             </div>
           )}
       
-      {/* CAS PDF : UPLOAD DIRECT */}
-      {lesson.type === 'pdf' ? (
-        <div 
-          onClick={() => document.getElementById(`upload-pdf-lesson-${index}`).click()}
-          className="w-full p-8 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 flex flex-col items-center justify-center cursor-pointer hover:bg-purple-100 transition-all"
-        >
-          <input 
-            type="file"
-            id={`upload-pdf-lesson-${index}`}
-            className="hidden"
-            accept=".pdf"
-            onChange={(e) => handleFileUpload(e, index, 'mediaUrl')} 
-          />
-          <span className="text-4xl mb-2">📄</span>
-          <p className="text-[11px] font-black uppercase text-purple-600">
-             {isUploading ? 'Chargement en cours...' : lesson.mediaUrl ? "Document chargé avec succès ✅" : "Téléverser le cours PDF"}
-          </p>
-          {lesson.mediaUrl && <p className="text-[8px] text-gray-400 mt-2 truncate max-w-[250px] italic">{lesson.mediaUrl}</p>}
-        </div>
-      ) : (
-        /* CAS VIDÉO OU AUDIO : CHAMP LIEN MÉDIA */
-        lesson.type !== 'text' && lesson.type !== 'audio' &&(
-        <div className="relative w-full p-6 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 overflow-hidden">
-          
-          {/* L'INPUT CACHÉ (C'est lui qui travaille) */}
-          <input 
-            type="file" 
-            id={`video-upload-${index}`} 
-            className="hidden" 
-            accept="video/*" 
-            ref={(el) => (fileInputRefs.current[index] = el)}
-            onChange={(e) => handleVideoUpload(e, index)} 
-          />
+     {/* --- DEBUT DU BLOC CONDITIONNEL --- */}
+        {lesson.type === 'pdf' ? (
+                <div 
+                  onClick={() => document.getElementById(`upload-pdf-lesson-${index}`).click()}
+                  className="w-full p-8 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 flex flex-col items-center justify-center cursor-pointer hover:bg-purple-100 transition-all"
+                >
+                  <input 
+                    type="file"
+                    id={`upload-pdf-lesson-${index}`}
+                    className="hidden"
+                    accept=".pdf"
+                    onChange={(e) => handleFileUpload(e, index, 'mediaUrl')} 
+                  />
+                  <span className="text-4xl mb-2">📄</span>
+                  <p className="text-[11px] font-black uppercase text-purple-600">
+                    {isUploading ? 'Chargement en cours...' : lesson.mediaUrl ? "Document chargé avec succès ✅" : "Téléverser le cours PDF"}
+                  </p>
+                  {lesson.mediaUrl && <p className="text-[8px] text-gray-400 mt-2 truncate max-w-[250px] italic">{lesson.mediaUrl}</p>}
+                </div>
+              ) : (
+                <>
+                  {/* --- CAS VIDÉO : AVEC SÉLECTEUR DE SOURCE --- */}
+                  {lesson.type === 'video' && (
+                    <div className="space-y-4 animate-fadeIn">
+                      <div className="flex gap-2 bg-gray-100 p-1.5 rounded-2xl w-full max-w-[320px] mx-auto">
+                        <button 
+                          type="button"
+                          onClick={() => handleLessonChange(index, 'videoSource', 'cloudinary')}
+                          className={`flex-1 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${lesson.videoSource !== 'youtube' ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-400'}`}
+                        >
+                          📁 Fichier Local
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => handleLessonChange(index, 'videoSource', 'youtube')}
+                          className={`flex-1 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${lesson.videoSource === 'youtube' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400'}`}
+                        >
+                          🔴 Lien YouTube
+                        </button>
+                      </div>
 
-          {/* LA BARRE DE PROGRESSION (Elle monte derrière le texte) */}
-          <div 
-            className="absolute bottom-0 left-0 h-1 bg-purple-600 transition-all duration-300"
-            style={{ width: `${uploadProgress[index] || 0}%` }}
-          ></div>
+                      {lesson.videoSource === 'youtube' ? (
+                        <div className="p-6 bg-red-50 border-2 border-dashed border-red-200 rounded-[30px] animate-slideIn text-center">
+                          <span className="text-3xl mb-3">🎬</span>
+                          <input 
+                            type="text" 
+                            placeholder="Colle le lien YouTube ou Vimeo ici..." 
+                            className="w-full p-4 bg-white border-2 border-red-100 rounded-2xl font-bold text-xs outline-none focus:border-red-400 transition-all text-center"
+                            value={lesson.mediaUrl}
+                            onChange={(e) => handleLessonChange(index, 'mediaUrl', e.target.value)} 
+                          />
+                        </div>
+                        
+                      ) : (
+                        <div className="relative w-full p-6 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 overflow-hidden text-center">
+                          <input 
+                            type="file" 
+                            id={`video-upload-${index}`} 
+                            className="hidden" 
+                            accept="video/*" 
+                            ref={(el) => (fileInputRefs.current[index] = el)}
+                            onChange={(e) => handleVideoUpload(e, index)} 
+                          />
+                          <div className="absolute bottom-0 left-0 h-1 bg-purple-600 transition-all" style={{ width: `${uploadProgress[index] || 0}%` }}></div>
+                          <div 
+                            onClick={uploadingIndex === index ? undefined : () => document.getElementById(`video-upload-${index}`).click()}
+                            className="flex flex-col items-center justify-center cursor-pointer"
+                          >
+                            <span className="text-3xl mb-2 italic">🎥</span>
+                            <p className="text-[10px] font-black uppercase text-purple-600">
+                              {uploadProgress[index] > 0 && uploadProgress[index] < 100 ? `Téléchargement : ${uploadProgress[index]}%` : lesson.mediaUrl ? "Vidéo prête ✅" : "Cliquer pour uploader la vidéo"}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
-          {/* LE VISUEL CLIQUABLE */}
-          <div 
-            onClick={
-              uploadingIndex === index
-                ? undefined
-                :() => document.getElementById(`video-upload-${index}`).click()}
-            className={`flex flex-col items-center justify-center cursor-pointer group${uploadingIndex === index ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            <span className="text-3xl mb-2 group-hover:scale-125 transition-transform">🎥</span>
-            <p className="text-[10px] font-black uppercase text-purple-600">
-              {uploadProgress[index] > 0 && uploadProgress[index] < 100 
-                ? `Téléchargement : ${uploadProgress[index]}%` 
-                : lesson.mediaUrl ? "Vidéo prête ✅" : "Cliquer pour uploader la vidéo"}
-            </p>
-          </div>
-        </div>
-        )
-      )}
+            {/* --- CAS AUDIO : UPLOAD DIRECT (SANS SÉLECTEUR YOUTUBE) --- */}
+            {/* {lesson.type === 'audio' && (
+              <div className="relative w-full p-6 bg-blue-50 rounded-[30px] border-2 border-dashed border-blue-200 overflow-hidden text-center animate-fadeIn">
+                <input 
+                  type="file" 
+                  id={`audio-upload-${index}`} 
+                  className="hidden" 
+                  accept="audio/*" 
+                  onChange={(e) => handleVideoUpload(e, index)} 
+                />
+                <div className="absolute bottom-0 left-0 h-1 bg-blue-500 transition-all" style={{ width: `${uploadProgress[index] || 0}%` }}></div>
+                <div 
+                  onClick={uploadingIndex === index ? undefined : () => document.getElementById(`audio-upload-${index}`).click()}
+                  className="flex flex-col items-center justify-center cursor-pointer"
+                >
+                  <span className="text-3xl mb-2">🎧</span>
+                  <p className="text-[10px] font-black uppercase text-blue-600">
+                    {uploadProgress[index] > 0 && uploadProgress[index] < 100 ? `Envoi : ${uploadProgress[index]}%` : lesson.mediaUrl ? "Audio prêt ✅" : "Téléverser le fichier Audio"}
+                  </p>
+                </div>
+              </div>
+            )} */}
+          </>
+          )}
+
 
       {/* 4. CONTENU TEXTE OU PETITE NOTE */}
       {lesson.type === 'text' ? (
@@ -934,9 +990,9 @@ const removeMaterial = (index) => {
           <label className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Offert</label>
         </div>
       </div>
-    </div>
-  ))}
-</div>
+          </div>
+         ))}
+        </div>
           
         </div>
           ):(
