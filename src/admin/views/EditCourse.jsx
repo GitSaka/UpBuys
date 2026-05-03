@@ -100,8 +100,16 @@ const EditCourse = () => {
       try {
         const res = await api.get(`/admin/get-courses/${id}`);
         const data = res.data.data;
+
+        // On s'assure que chaque leçon chargée a une source définie
+        const sanitizedLessons = (data.lessons || []).map(lesson => ({
+          ...lesson,
+          videoSource: lesson.videoSource || 'cloudinary' // 👈 Sécurité pour les anciens cours
+        }));
+
         setCourse({ ...data, materials: data.materials || [] });
-        setLessons(data.lessons || []);
+        // setLessons(data.lessons || []);
+        setLessons(sanitizedLessons); 
         if (editor && data.descriptionLong) { editor.commands.setContent(data.descriptionLong); }
       } catch (err) { console.error(err); } finally { setLoading(false); }
     };
@@ -116,7 +124,8 @@ const EditCourse = () => {
   };
   const removeMaterial = (idx) => setCourse({ ...course, materials: course.materials.filter((_, i) => i !== idx) });
 
-  const addLesson = () => setLessons([...lessons, { title: '', type: 'video', mediaUrl: '', duration: '', description: '', isFree: false, attachmentName: '' }]);
+  const addLesson = () => setLessons([...lessons, 
+    { title: '', type: 'video', mediaUrl: '',videoSource: 'cloudinary', duration: '', description: '', isFree: false, attachmentName: '' }]);
   const handleLessonChange = (idx, field, val) => {
     const updated = [...lessons];
     updated[idx][field] = val;
@@ -140,6 +149,13 @@ const EditCourse = () => {
   const handleVideoUpload = async (e, index) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+        // 🛡️ Sécurité : Ne pas uploader si on est en mode YouTube
+      if (lessons[index].videoSource === 'youtube') {
+        alert("Vous êtes en mode YouTube. Changez la source pour uploader un fichier.");
+        return;
+      }
+
     setUploadingIndex(index);
     const formData = new FormData();
     formData.append("file", file);
@@ -277,16 +293,58 @@ const EditCourse = () => {
                         <input required value={lesson.title} onChange={e => handleLessonChange(index, 'title', e.target.value)} className="w-full p-4 bg-gray-50 rounded-2xl font-bold text-sm outline-none" placeholder="Titre du chapitre" />
 
                         {/* MÉDIA SELON TYPE */}
+                        {/* MÉDIA SELON TYPE (VIDÉO AVEC SWITCH SOURCE) */}
                         {lesson.type === 'video' && (
-                          <div className="relative p-6 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 text-center cursor-pointer group overflow-hidden" onClick={() => document.getElementById(`video-edit-${index}`).click()}>
-                             <input type="file" id={`video-edit-${index}`} className="hidden" accept="video/*" onChange={(e) => handleVideoUpload(e, index)} />
-                             <span className="text-3xl mb-2 block group-hover:scale-110 transition-transform">🎥</span>
-                             <p className="text-[10px] font-black uppercase text-purple-600">
-                                {uploadProgress[index] > 0 ? `Upload : ${uploadProgress[index]}%` : lesson.mediaUrl ? "Vidéo prête ✅" : "Changer la vidéo"}
-                             </p>
-                             <div className="absolute bottom-0 left-0 h-1 bg-purple-600 transition-all shadow-[0_0_15px_rgba(147,51,234,0.5)]" style={{ width: `${uploadProgress[index] || 0}%` }} />
+                          <div className="space-y-4 animate-fadeIn">
+                            {/* SÉLECTEUR DE SOURCE */}
+                            <div className="flex gap-2 bg-gray-100 p-1.5 rounded-2xl w-full max-w-[320px] mx-auto">
+                              <button 
+                                type="button"
+                                onClick={() => handleLessonChange(index, 'videoSource', 'cloudinary')}
+                                className={`flex-1 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${lesson.videoSource !== 'youtube' ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-400'}`}
+                              >
+                                📁 Fichier
+                              </button>
+                              <button 
+                                type="button"
+                                onClick={() => handleLessonChange(index, 'videoSource', 'youtube')}
+                                className={`flex-1 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${lesson.videoSource === 'youtube' ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400'}`}
+                              >
+                                🔴 YouTube
+                              </button>
+                            </div>
+
+                            {lesson.videoSource === 'youtube' ? (
+                              /* OPTION YOUTUBE */
+                              <div className="p-6 bg-red-50 border-2 border-dashed border-red-200 rounded-[30px] animate-slideIn">
+                                <div className="flex flex-col items-center">
+                                  <span className="text-3xl mb-3">🎬</span>
+                                  <input 
+                                    type="text" 
+                                    placeholder="Colle le lien YouTube ou Vimeo ici..." 
+                                    className="w-full p-4 bg-white border-2 border-red-100 rounded-2xl font-bold text-xs outline-none focus:border-red-400 transition-all text-center"
+                                    value={lesson.mediaUrl}
+                                    onChange={(e) => handleLessonChange(index, 'mediaUrl', e.target.value)} 
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              /* OPTION CLOUDINARY (Ton code d'origine) */
+                              <div 
+                                className="relative p-6 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 text-center cursor-pointer group overflow-hidden" 
+                                onClick={() => document.getElementById(`video-edit-${index}`).click()}
+                              >
+                                <input type="file" id={`video-edit-${index}`} className="hidden" accept="video/*" onChange={(e) => handleVideoUpload(e, index)} />
+                                <span className="text-3xl mb-2 block group-hover:scale-110 transition-transform">🎥</span>
+                                <p className="text-[10px] font-black uppercase text-purple-600">
+                                    {uploadProgress[index] > 0 ? `Upload : ${uploadProgress[index]}%` : lesson.mediaUrl ? "Vidéo prête ✅" : "Changer la vidéo"}
+                                </p>
+                                <div className="absolute bottom-0 left-0 h-1 bg-purple-600 transition-all shadow-[0_0_15px_rgba(147,51,234,0.5)]" style={{ width: `${uploadProgress[index] || 0}%` }} />
+                              </div>
+                            )}
                           </div>
                         )}
+
 
                         {lesson.type === 'pdf' && (
                            <div className="p-6 bg-purple-50 rounded-[30px] border-2 border-dashed border-purple-200 text-center cursor-pointer" onClick={() => document.getElementById(`pdf-edit-${index}`).click()}>

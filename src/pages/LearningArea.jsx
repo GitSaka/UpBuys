@@ -3,12 +3,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 // import axios from 'axios';
 import ChapterList from '../components/ChapterList';
-import ReactPlayer from 'react-player';
+import ReactPlayer from "react-player"
 import DOMPurify from 'dompurify';
 import Navbar from '../components/layout/Navbar';
 import { getAuthToken } from '../services/feedService';
 import { jwtDecode } from 'jwt-decode';
 import api from '../services/api';
+import { Plyr } from "plyr-react"
+import "plyr/dist/plyr.css"
 
 
 const LearningArea = () => {
@@ -116,8 +118,16 @@ useEffect(() => {
   if (courseId) fetchEverything();
 }, [courseId, lessonId, token]);
 
+const getYouTubeID = (url) => {
+  if (!url) return "";
 
+  const regExp =
+    /(?:youtu\.be\/|youtube\.com.*v=|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^#&?]*)/;
 
+  const match = url.match(regExp);
+
+  return match && match[1] ? match[1] : "";
+};
 
   // 2. TON SYSTÈME D'OBSERVER POUR LE LECTEUR FLOTTANT
 useEffect(() => {
@@ -154,8 +164,11 @@ useEffect(() => {
       Ouverture en cours...
     </div>
   );
+  
 
   if (!course || !currentLesson) return null;
+
+
 
  return (
   <>
@@ -197,38 +210,50 @@ useEffect(() => {
           {currentLesson.type !== 'text' && currentLesson.type !== 'pdf' ? (
             <div ref={videoAnchorRef} className="sticky top-0 z-40 w-full bg-black aspect-video flex items-center justify-center shadow-2xl lg:relative lg:max-w-[850px] lg:mx-auto lg:mt-8 lg:rounded-[32px] lg:h-[450px] overflow-hidden">
               <div className={`${isFloating ? 'fixed bottom-8 right-8 w-[350px] z-50 rounded-3xl border-4 border-white shadow-2xl animate-fade-in' : 'relative w-full h-full lg:rounded-[32px] shadow-2xl'} bg-black overflow-hidden transition-all duration-500 aspect-video`}>
-                
-                {currentLesson.type === 'video' && (
+  
+  
+  
+{currentLesson.type === "video" && (
+  <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
 
-                  <div className="relative w-full h-full aspect-video bg-black rounded-xl overflow-hidden">
-                  {isVideoLoading && (
-                    <div className="absolute inset-0 bg-black flex items-center justify-center z-50">
-                      <p className="text-white text-lg animate-pulse">
-                        📡 Chargement de la vidéo…
-                      </p>
-                    </div>
-                  )}
-                  {isVideoLoading && (
-                      <p>📡 Chargement de la vidéo…</p>
-                    )}
-                  <video
-                    src={currentLesson.mediaUrl}
-                    controls
-                    className="w-full h-full object-contain"
-                    preload="metadata"
-                    controlsList='nodownload'
-                    onContextMenu={(e)=>e.preventDefault()}
-                    onCanPlay={() => {
-                    setIsVideoLoading(false);
-                   
-                              }}
-                  />
-                </div>
+    {currentLesson.mediaUrl?.includes("youtu") ? (
+      <iframe
+        key={currentLesson._id}
+        src={`https://www.youtube.com/embed/${getYouTubeID(currentLesson.mediaUrl)}?rel=0&modestbranding=1&enablejsapi=1`}
+        className="absolute inset-0 w-full h-full border-none"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        title="YouTube Player"
+      />
+    ) : (
+      <div className="w-full h-full bg-black">
+        {isVideoLoading && (
+          <div className="absolute inset-0 bg-black flex items-center justify-center z-50">
+            <p className="text-white text-[10px] font-black uppercase animate-pulse">
+              📡 Chargement...
+            </p>
+          </div>
+        )}
 
-                   
-                )
+        <video
+          key={currentLesson._id}
+          src={currentLesson.mediaUrl}
+          controls
+          className="w-full h-full object-contain"
+          preload="metadata"
+          controlsList="nodownload"
+          onContextMenu={(e) => e.preventDefault()}
+          onCanPlay={() => setIsVideoLoading(false)}
+        />
+      </div>
+    )}
+  </div>
+)}
+
+
+
                  
-                }
+                
 
                 {currentLesson.type === 'audio' && (
                   <div className="flex flex-col items-center justify-center h-full bg-gradient-to-br from-purple-900 to-black p-10">

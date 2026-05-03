@@ -871,6 +871,9 @@ const removeMaterial = (index) => {
                             value={lesson.mediaUrl}
                             onChange={(e) => handleLessonChange(index, 'mediaUrl', e.target.value)} 
                           />
+                          <p className="mt-3 px-4 py-2 bg-amber-50 border border-amber-100 rounded-xl text-[9px] font-bold text-amber-600 uppercase tracking-tight leading-relaxed animate-pulse">
+                            ⚠️ Attention : Le mode YouTube privilégie la vitesse. Pour une sécurité maximale, utilisez l'option "Fichier Local".
+                          </p>
                         </div>
                         
                       ) : (
