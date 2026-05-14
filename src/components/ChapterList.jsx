@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ChapterList = ({ lessons, course, hasAccess, isSakaFan, currentLessonId, onSelect }) => {
+const ChapterList = ({ lessons, course,token, hasAccess, isSakaFan, currentLessonId, onSelect }) => {
   const navigate = useNavigate();
   // const { coursesId } = useParams(); // Utilise l'ID de l'URL si nécessaire
 
@@ -25,6 +25,13 @@ const ChapterList = ({ lessons, course, hasAccess, isSakaFan, currentLessonId, o
                 if (!course || !lesson) return
                 // 🛑 CAS 1 : COURS GRATUIT + PAS ENCORE FAN
                 // On bloque et on ouvre le Popup WhatsApp via onSelect
+
+                 // 🔒 BARRIÈRE 1 : Pas de token = Pas de redirection (sauf si achat validé)
+                if (!token && !hasAccess) {
+                  if (onSelect) onSelect();
+                  return;
+                }
+                
                 if (course.isFree && !isSakaFan) {
                   if (onSelect) onSelect(); 
                 } 

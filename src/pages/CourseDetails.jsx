@@ -12,7 +12,7 @@ import api from '../services/api';
 
 const CourseDetails = () => {
   const { coursesId } = useParams();
-  const [accessStatus, setAccessStatus] = useState('verifying');
+  // const [accessStatus, setAccessStatus] = useState('verifying');
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,11 +57,7 @@ const CourseDetails = () => {
             
             // 🛰️ On demande au serveur : "Est-ce que cet élève possède ce cours ?"
             const res = await api.get(`/payments/check/${course?._id}`);
-            if (res.data.hasAccess) {
-                setAccessStatus('granted');
-              } else {
-                setAccessStatus('denied');
-            }
+            
             setHasAccess(res.data.hasAccess); // Sera true ou false selon la BDD
           } catch (err) {
             console.log(err)
@@ -117,42 +113,42 @@ const CourseDetails = () => {
         }
       };
 
-    const handleMainAction = () => {
-      // 1. Sécurité : si ça charge, on bloque
-      if (accessStatus === 'verifying') return;
+    // const handleMainAction = () => {
+    //   // 1. Sécurité : si ça charge, on bloque
+    //   if (accessStatus === 'verifying') return;
 
-      // 2. Gestion de l'accès (Prospect / Lead)
-      if (!token) {
-        setCaptureModal({ isOpen: true, course });
-        return;
-      }
+    //   // 2. Gestion de l'accès (Prospect / Lead)
+    //   if (!token) {
+    //     setCaptureModal({ isOpen: true, course });
+    //     return;
+    //   }
 
-      // 3. Gestion de l'accès autorisé (Payé ou Gratuit et Connecté)
-      if (accessStatus === 'granted' || (course.isFree && isConnectedToThisEmpire)) {
+    //   // 3. Gestion de l'accès autorisé (Payé ou Gratuit et Connecté)
+    //   if (accessStatus === 'granted' || (course.isFree && isConnectedToThisEmpire)) {
           
-      const firstId = Array.isArray(course.lessons) && course.lessons.length > 0 
-                      ? course.lessons[0]._id 
-                      : null;
+    //   const firstId = Array.isArray(course.lessons) && course.lessons.length > 0 
+    //                   ? course.lessons[0]._id 
+    //                   : null;
 
         
-        if (course.productType === 'Outil') {
-          navigate(`/formation/${course._id}`);
-        } else {
-          // On redirige vers la première leçon ou la racine si vide
-          navigate(`/formation/${course._id}${firstId ? `/${firstId}` : ''}`);
-        }
-        return;
-      }
+    //     if (course.productType === 'Outil') {
+    //       navigate(`/formation/${course._id}`);
+    //     } else {
+    //       // On redirige vers la première leçon ou la racine si vide
+    //       navigate(`/formation/${course._id}${firstId ? `/${firstId}` : ''}`);
+    //     }
+    //     return;
+    //   }
 
-      // 4. Cas Spécial Gratuit (Besoin de capture avant accès)
-      if (course.isFree && !isConnectedToThisEmpire) {
-        setCaptureModal({ isOpen: true, course });
-        return;
-      }
+    //   // 4. Cas Spécial Gratuit (Besoin de capture avant accès)
+    //   if (course.isFree && !isConnectedToThisEmpire) {
+    //     setCaptureModal({ isOpen: true, course });
+    //     return;
+    //   }
 
-      // 5. Par défaut : Vendre
-      navigate(`/empire/checkout/${course._id}`);
-    };
+    //   // 5. Par défaut : Vendre
+    //   navigate(`/empire/checkout/${course._id}`);
+    // };
 
 
   if (loading) return (
@@ -283,6 +279,7 @@ const CourseDetails = () => {
                    lessons={course.lessons} 
                    hasAccess={hasAccess} 
                    isSakaFan={isConnectedToThisEmpire}
+                   token={token}
                    onSelect={()=> setCaptureModal({isOpen: true, course: course})}
                 />
               </>
@@ -320,7 +317,7 @@ const CourseDetails = () => {
 
         {/* --- ZONE D'ACTION DYNAMIQUE --- */}
       <div className="mt-8 flex justify-center md:justify-start">
-        <button
+        {/* <button
               onClick={handleMainAction}
               disabled={accessStatus === 'verifying'}
               className={`px-6 py-3 md:px-8 md:py-4 rounded-2xl font-black text-sm md:text-[11px] uppercase tracking-wide md:tracking-[0.2em] shadow-lg transition-all active:scale-95 ${
@@ -334,9 +331,9 @@ const CourseDetails = () => {
               {accessStatus === 'verifying' ? "verification..." : (
                 (course.isFree || accessStatus === 'granted') ? "Accéder au contenu" : "Acheter maintenant"
               )}
-        </button>
+        </button> */}
 
-      {/* <button
+      <button
         onClick={() => {
           if (!token && !isConnectedToThisEmpire) {
             setCaptureModal({ isOpen: true, course });
@@ -378,7 +375,7 @@ const CourseDetails = () => {
           : hasAccess
           ? "Accéder au contenu"
           : "Acheter maintenant"}
-      </button> */}
+      </button>
     </div> 
       </div>
       <WhatsAppCapture 
