@@ -82,6 +82,24 @@ const WhatsAppCapture = ({ isOpen, coachId, onConfirm, onCancel }) => {
     { name: "Guinée", code: '+224' }
   ];
 
+const handleGuestLogin = () => {
+  // 🎯 1. On remplit l'identifiant pour l'étape 1 (On utilise un email de démo)
+  const demoEmail = 'recruteur@demo.com';
+  setIdentifier(demoEmail);
+  setEmail(demoEmail);
+  
+  // 🎯 2. On injecte le mot de passe de test
+  setPassword('DemoSecure123!');
+  
+  // 🎯 3. On force l'application à considérer que c'est un utilisateur existant
+  setIsExistingUser(true);
+  
+  // 🎯 4. On téléporte le recruteur directement à l'étape 2
+  setStep('PASSWORD_AND_NAME');
+};
+
+
+
   if (!isOpen) return null;
 
   return (
@@ -162,6 +180,15 @@ const WhatsAppCapture = ({ isOpen, coachId, onConfirm, onCancel }) => {
           >
             ANNULER
           </button>
+
+          <button 
+            type="button" // 🎯 Très important pour éviter de déclencher le formulaire avant le remplissage
+            onClick={handleGuestLogin}
+            className="w-full bg-gray-900 text-white p-4 rounded-2xl mt-4 font-black text-[10px] uppercase tracking-widest hover:bg-purple-600 active:scale-95 transition-all shadow-md"
+          >
+            🔑 Tester la démo en 1 clic (Accès Recruteur)
+          </button>
+
         </form>
       </div>
     </div>
